@@ -28,7 +28,7 @@ public class Player {
     }
 
 
-    enum Fielder {
+    public enum Fielder {
         allfielder("內外野手"),
         infielder("內野手"),
         outfielder("外野手");

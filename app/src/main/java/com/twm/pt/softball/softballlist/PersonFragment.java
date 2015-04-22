@@ -1,19 +1,30 @@
 package com.twm.pt.softball.softballlist;
 
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
+import com.twm.pt.softball.softballlist.Adapter.PersonListAdapter;
+import com.twm.pt.softball.softballlist.component.Player;
 import com.twm.pt.softball.softballlist.utility.L;
 
+import java.util.ArrayList;
+
 public class PersonFragment extends Fragment {
-    RecyclerView person_list_recycler_view;
+    RecyclerView mRecyclerView;
+    PersonListAdapter mAdapter;
+    ArrayList<Player> players = new ArrayList<Player>();
+    private Context mContext;
+    private Activity mActivity;
+
     static PersonFragment newInstance(String s) {
         PersonFragment newFragment = new PersonFragment();
         return newFragment;
@@ -23,6 +34,9 @@ public class PersonFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         L.d("TestFragment-----onCreate");
+        mContext = getActivity().getBaseContext();
+
+        players.add(new Player("name", "nickName", "pic", "1", "R/R", Player.Fielder.allfielder));
     }
 
     @Override
@@ -30,7 +44,13 @@ public class PersonFragment extends Fragment {
         L.d( "TestFragment-----onCreateView");
         View view = inflater.inflate(R.layout.person_fragment, container, false);
 
-        person_list_recycler_view = (RecyclerView) view.findViewById(R.id.person_list_recycler_view);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.person_list_recycler_view);
+
+        mRecyclerView.setHasFixedSize(true);
+        StaggeredGridLayoutManager mStaggeredGridLayoutManager =new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(mStaggeredGridLayoutManager);
+        mAdapter = new PersonListAdapter(mContext,  new ArrayList<Player>());
+        mRecyclerView.setAdapter(mAdapter);
 
         return view;
 
@@ -62,6 +82,12 @@ public class PersonFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         L.d( "TestFragment-----onDestroy");
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mActivity = activity;
     }
 
 }
