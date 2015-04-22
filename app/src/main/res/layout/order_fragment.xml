@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@mipmap/redsand" >
+
+
+    <com.twm.pt.softball.softballlist.ui.TouchListView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tlv="http://schemas.android.com/apk/res-auto"
+
+        android:id="@+id/order_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:drawSelectorOnTop="false"
+        tlv:normal_height="36dip"
+        tlv:expanded_height="96dip"
+        tlv:grabber="@+id/icon"
+        tlv:remove_mode="slideRight"
+        />
+
+</LinearLayout>
