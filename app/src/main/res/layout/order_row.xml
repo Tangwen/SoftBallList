@@ -19,22 +19,40 @@
         />
     <Button
         android:id="@+id/fielding_positions"
-        android:layout_width="wrap_content"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:text="FA"
+        android:layout_marginLeft="15dp"
+        android:text="BP"
         android:minEms="2"
         />
     <TextView android:id="@+id/person_name"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="9dip"
+        android:paddingLeft="15dp"
         android:layout_alignWithParentIfMissing="true"
         android:layout_centerVertical="true"
         android:ellipsize="marquee"
         android:singleLine="true"
-        android:textColor="@color/blue"
+        android:textColor="@color/yellow"
         android:textStyle="bold"
         android:textSize="24sp"
+        />
+    <TextView
+        android:id="@+id/person_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:minEms="2"
+        android:textColor="@color/green"
+        />
+    <TextView
+        android:id="@+id/person_average"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:minEms="5"
+        android:text="0.500"
+        android:textColor="@color/material_blue_grey_800"
         />
 </LinearLayout>

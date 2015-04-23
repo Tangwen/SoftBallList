@@ -5,9 +5,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import com.twm.pt.softball.softballlist.Adapter.PersonListAdapter;
 import com.twm.pt.softball.softballlist.component.Player;
 import com.twm.pt.softball.softballlist.utility.L;
+import com.twm.pt.softball.softballlist.Data.PlayerData;
 
 import java.util.ArrayList;
 
@@ -35,8 +36,6 @@ public class PersonFragment extends Fragment {
         super.onCreate(savedInstanceState);
         L.d("TestFragment-----onCreate");
         mContext = getActivity().getBaseContext();
-
-        players.add(new Player("name", "nickName", "pic", "1", "R/R", Player.Fielder.allfielder));
     }
 
     @Override
@@ -47,9 +46,10 @@ public class PersonFragment extends Fragment {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.person_list_recycler_view);
 
         mRecyclerView.setHasFixedSize(true);
-        StaggeredGridLayoutManager mStaggeredGridLayoutManager =new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL);
-        mRecyclerView.setLayoutManager(mStaggeredGridLayoutManager);
-        mAdapter = new PersonListAdapter(mContext,  new ArrayList<Player>());
+        GridLayoutManager mGridLayoutManager =new GridLayoutManager(mContext, 3, LinearLayoutManager.VERTICAL, false);
+        mRecyclerView.setLayoutManager(mGridLayoutManager);
+        players = PlayerData.getInstance().getPlayers();
+        mAdapter = new PersonListAdapter(mContext, players);
         mRecyclerView.setAdapter(mAdapter);
 
         return view;

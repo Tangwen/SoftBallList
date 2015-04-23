@@ -31,6 +31,10 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
         // each data item is just a string in this case
         public ImageView mImageView;
         public TextView person_name;
+        public TextView person_nickName;
+        public TextView person_number;
+        public TextView person_habits;
+        public TextView person_fielder;
 
 
         public ViewHolder(View itemLayoutView) {
@@ -38,6 +42,10 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
             itemLayoutView.setOnClickListener(this);
             mImageView = (ImageView) itemLayoutView.findViewById(R.id.person_picture);
             person_name = (TextView) itemLayoutView.findViewById(R.id.person_name);
+            person_nickName = (TextView) itemLayoutView.findViewById(R.id.person_nickName);
+            person_number = (TextView) itemLayoutView.findViewById(R.id.person_number);
+            person_habits = (TextView) itemLayoutView.findViewById(R.id.person_habits);
+            person_fielder = (TextView) itemLayoutView.findViewById(R.id.person_fielder);
         }
 
         @Override
@@ -66,7 +74,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
     @Override
     public PersonListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.person_list, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.person_item, parent, false);
         // set the view's size, margins, paddings and layout parameters
         //...
         ViewHolder vh = new ViewHolder(v);
@@ -80,9 +88,12 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
         // - replace the contents of the view with that element
 
         Player mPlayer = playerArrayList.get(position);
-        Picasso.with(mContext).load(mPlayer.picture).placeholder(R.drawable.progress_animation).into(holder.mImageView);
+        Picasso.with(mContext).load(mPlayer.picture).placeholder(R.drawable.progress_animation).error(R.mipmap.baseball_icon).into(holder.mImageView);
+        holder.person_number.setText("# " + mPlayer.number);
         holder.person_name.setText(mPlayer.Name);
-
+        holder.person_nickName.setText(" ("+mPlayer.nickName+")");
+        holder.person_habits.setText(mPlayer.habits);
+        holder.person_fielder.setText(mPlayer.fielder.getFielderName());
     }
 
     // Return the size of your dataset (invoked by the layout manager)
