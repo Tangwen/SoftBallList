@@ -5,12 +5,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.twm.pt.softball.softballlist.Data.PlayerData;
 import com.twm.pt.softball.softballlist.R;
 import com.twm.pt.softball.softballlist.component.Player;
+import com.twm.pt.softball.softballlist.utility.L;
+import com.twm.pt.softball.softballlist.utility.StorageDirectory;
 
 import java.util.ArrayList;
 
@@ -21,6 +25,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
 
     private ArrayList<Player> playerArrayList;
     private Context mContext;
+    private String picPath;
     private ArrayList<View.OnClickListener> mListener = new ArrayList<View.OnClickListener> ();
     private int setFullSpanPosition = -1;
 
@@ -35,6 +40,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
         public TextView person_number;
         public TextView person_habits;
         public TextView person_fielder;
+        public CheckBox person_present;
 
 
         public ViewHolder(View itemLayoutView) {
@@ -46,6 +52,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
             person_number = (TextView) itemLayoutView.findViewById(R.id.person_number);
             person_habits = (TextView) itemLayoutView.findViewById(R.id.person_habits);
             person_fielder = (TextView) itemLayoutView.findViewById(R.id.person_fielder);
+            person_present = (CheckBox) itemLayoutView.findViewById(R.id.person_present);
         }
 
         @Override
@@ -56,7 +63,6 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
                 setFullSpanPosition = getLayoutPosition();
             }
             notifyDataSetChanged();
-//            Toast.makeText(view.getContext(), "position = " + getPosition() + ", " + getLayoutPosition() + ", " + getAdapterPosition(), Toast.LENGTH_SHORT).show();
             for (View.OnClickListener listener: mListener) {
                 view.setTag(getLayoutPosition());
                 listener.onClick(view);
@@ -68,6 +74,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
     public PersonListAdapter(Context context, ArrayList<Player> playerArrayList) {
         mContext = context;
         this.playerArrayList = playerArrayList;
+        picPath = "file://" + StorageDirectory.getStorageDirectory(mContext, StorageDirectory.StorageType.ST_SDCard_RootDir) + PlayerData.getInstance().picPath;
     }
 
     // Create new views (invoked by the layout manager)
@@ -88,12 +95,15 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
         // - replace the contents of the view with that element
 
         Player mPlayer = playerArrayList.get(position);
-        Picasso.with(mContext).load(mPlayer.picture).placeholder(R.drawable.progress_animation).error(R.mipmap.baseball_icon).into(holder.mImageView);
+        //Picasso.with(mContext).load(mPlayer.picture).placeholder(R.drawable.progress_animation).error(R.mipmap.baseball_icon).into(holder.mImageView);
+        //L.d("(" + position + ")" + "picPath=file://" + picPath + mPlayer.picture);
+        Picasso.with(mContext).load(picPath + mPlayer.picture).placeholder(R.drawable.progress_animation).error(R.mipmap.baseball_icon).into(holder.mImageView);
         holder.person_number.setText("# " + mPlayer.number);
         holder.person_name.setText(mPlayer.Name);
-        holder.person_nickName.setText(" ("+mPlayer.nickName+")");
+        holder.person_nickName.setText(" (" + mPlayer.nickName + ")");
         holder.person_habits.setText(mPlayer.habits);
         holder.person_fielder.setText(mPlayer.fielder.getFielderName());
+        holder.person_present.setChecked(mPlayer.isPresent());
     }
 
     // Return the size of your dataset (invoked by the layout manager)

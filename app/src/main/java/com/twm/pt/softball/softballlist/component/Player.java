@@ -49,15 +49,9 @@ public class Player {
     public void setPresent(boolean present) {
         this.present = present;
     }
-    public Position getPosition() {
-        return position;
-    }
-    public void setPosition(Position position) {
-        this.position = position;
-    }
 
     public enum Fielder {
-        allfielder("內外野手"),
+        all_fielder("內外野手"),
         infielder("內野手"),
         outfielder("外野手"),
         pitcher("投手");

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.twm.pt.softball.softballlist.R;
@@ -29,23 +30,38 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        View row = convertView;
-        if (row == null) {
+        View view = convertView;
+        ViewHolder holder;
+        if (view == null) {
             LayoutInflater inflater = mActivity.getLayoutInflater();
-            row = inflater.inflate(R.layout.order_row, parent, false);
+            view = inflater.inflate(R.layout.order_row, parent, false);
+
+            holder = new ViewHolder();
+            holder.order_id = (TextView) view.findViewById(R.id.order_id);
+            holder.positions = (Button) view.findViewById(R.id.person_positions);
+            holder.name = (TextView) view.findViewById(R.id.person_name);
+            holder.number = (TextView) view.findViewById(R.id.person_number);
+            holder.average = (TextView) view.findViewById(R.id.person_average);
+
+            view.setTag(holder);
+        } else {
+            holder = (ViewHolder)view.getTag();
         }
 
-        TextView label = (TextView) row.findViewById(R.id.person_name);
-        TextView order_id = (TextView) row.findViewById(R.id.order_id);
+        holder.order_id.setText(String.valueOf(position+1));
+        holder.positions.setText(playerArrayList.get(position).position.getShortName());
+        holder.name.setText(playerArrayList.get(position).Name);
+        holder.number.setText(playerArrayList.get(position).number);
 
-        label.setText(playerArrayList.get(position).Name);
-        order_id.setText(String.valueOf(position+1));
 
-        return (row);
+        return (view);
     }
 
     private class ViewHolder {
-        TextView label;
         TextView order_id;
+        Button positions;
+        TextView name;
+        TextView number;
+        TextView average;
     };
 }

@@ -1,4 +1,4 @@
-package com.twm.pt.softball.softballlist;
+package com.twm.pt.softball.softballlist.Fragment;
 
 
 import android.app.Activity;
@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.twm.pt.softball.softballlist.Adapter.OrderListAdapter;
 import com.twm.pt.softball.softballlist.Data.PlayerData;
+import com.twm.pt.softball.softballlist.R;
 import com.twm.pt.softball.softballlist.component.Player;
 import com.twm.pt.softball.softballlist.ui.TouchListView;
 import com.twm.pt.softball.softballlist.utility.L;
@@ -22,9 +23,11 @@ public class OrderFragment extends Fragment {
     private Activity mActivity;
     private OrderListAdapter mOrderListAdapter = null;
 
-
-    static OrderFragment newInstance() {
-        OrderFragment newFragment = new OrderFragment();
+    private static OrderFragment newFragment;
+    public static OrderFragment newInstance() {
+        if(newFragment==null) {
+            newFragment = new OrderFragment();
+        }
         return newFragment;
     }
 
@@ -41,7 +44,7 @@ public class OrderFragment extends Fragment {
         View view = inflater.inflate(R.layout.order_fragment, container, false);
 
         TouchListView mTouchListView = (TouchListView) view.findViewById(R.id.order_list);
-        mOrderListAdapter = new OrderListAdapter(mContext, mActivity, PlayerData.getInstance().getPlayers());
+        mOrderListAdapter = new OrderListAdapter(mContext, mActivity, PlayerData.getInstance().getAllPlayers());
         mTouchListView.setAdapter(mOrderListAdapter);
         mTouchListView.setDropListener(onDrop);
         mTouchListView.setRemoveListener(onRemove);

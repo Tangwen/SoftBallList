@@ -14,6 +14,10 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.twm.pt.softball.softballlist.Adapter.MyFragmentPagerAdapter;
+import com.twm.pt.softball.softballlist.Fragment.OrderFragment;
+import com.twm.pt.softball.softballlist.Fragment.PersonFragment;
+import com.twm.pt.softball.softballlist.Fragment.PositionsFragment;
 import com.twm.pt.softball.softballlist.utility.L;
 
 import java.util.ArrayList;
@@ -47,6 +51,10 @@ public class MainActivity extends ActionBarActivity {
         InitWidth();
         InitTextView();
         InitViewPager();
+
+//        L.d("ST_Rom_AppDir=" + StorageDirectory.getStorageDirectory(getBaseContext(), StorageDirectory.StorageType.ST_Rom_AppDir));
+//        L.d("ST_Rom_DataDir=" + StorageDirectory.getStorageDirectory(getBaseContext(), StorageDirectory.StorageType.ST_Rom_DataDir));
+//        L.d("ST_SDCard_RootDir=" + StorageDirectory.getStorageDirectory(getBaseContext(), StorageDirectory.StorageType.ST_SDCard_RootDir));
     }
 
 
@@ -109,16 +117,16 @@ public class MainActivity extends ActionBarActivity {
         public void onClick(View v) {
             mPager.setCurrentItem(index);
         }
-    };
+    }
 
 
     private void InitViewPager() {
         mPager = (ViewPager) findViewById(R.id.vPager);
-        fragmentsList = new ArrayList<Fragment>();
+        fragmentsList = new ArrayList<>();
 
-        Fragment personFragment = PersonFragment.newInstance("Hello");
+        Fragment personFragment = PersonFragment.newInstance();
         Fragment orderFragment = OrderFragment.newInstance();
-        Fragment positionsFragment= PositionsFragment.newInstance("Hello Friends.");
+        Fragment positionsFragment= PositionsFragment.newInstance();
 
         fragmentsList.add(personFragment);
         fragmentsList.add(orderFragment);
@@ -167,9 +175,11 @@ public class MainActivity extends ActionBarActivity {
                     break;
             }
             currIndex = arg0;
-            animation.setFillAfter(true);
-            animation.setDuration(300);
-            ivBottomLine.startAnimation(animation);
+            if(animation!=null) {
+                animation.setFillAfter(true);
+                animation.setDuration(300);
+                ivBottomLine.startAnimation(animation);
+            }
         }
 
         @Override

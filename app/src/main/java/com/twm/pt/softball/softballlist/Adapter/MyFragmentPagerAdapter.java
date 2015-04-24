@@ -1,4 +1,4 @@
-package com.twm.pt.softball.softballlist;
+package com.twm.pt.softball.softballlist.Adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
