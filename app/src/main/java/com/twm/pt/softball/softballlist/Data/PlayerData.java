@@ -10,6 +10,8 @@ import com.twm.pt.softball.softballlist.utility.PreferenceUtils;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Created by TangWen on 2015/4/23.
@@ -20,6 +22,7 @@ public class PlayerData {
 
     private String sharedPreferencesKey = "PlayerData";
     private ArrayList<Player> players = new ArrayList<Player>();
+//    private ArrayList<Player> orderPlayers = new ArrayList<Player>();
     private Context mContext;
 
     private static PlayerData mPlayerData;
@@ -35,11 +38,16 @@ public class PlayerData {
         initPlayerData();
     }
 
-    private void initPlayerData() {
-        L.d("initPlayerData");
+    private void LoadPlayers() {
         players = PreferenceUtils.JsonToObject(PreferenceUtils.getValue(mContext, sharedPreferencesKey, ""), arrayListPlayerType);
+    }
+    private void SavePlayer() {
+        PreferenceUtils.setValue(mContext, sharedPreferencesKey, PreferenceUtils.ObjectToJson(players));
+    }
+
+    private void initPlayerData() {
+        LoadPlayers();
         if(players==null) {
-            L.d("players==null");
             players = new ArrayList<Player>();
         }
         if(players.size()==0) {
@@ -67,17 +75,60 @@ public class PlayerData {
             player.setPresent(false);
             players.add(player);
 
-            PreferenceUtils.setValue(mContext, sharedPreferencesKey, PreferenceUtils.ObjectToJson(players));
-            L.d("PreferenceUtils.setValue");
+            SavePlayer();
         }
     }
 
 
     public ArrayList<Player> getAllPlayers() {
+        players = sortByNumber(players);
         return players;
     }
     public void setAllPlayers(ArrayList<Player> players) {
         this.players = players;
+        players = sortByNumber(players);
+        SavePlayer();
     }
 
+    public ArrayList<Player> getOrderPlayers() {
+        ArrayList<Player> orderPlayers = new ArrayList<Player>();
+        for(Player mPlayer : players) {
+            if(mPlayer.isPresent()) {
+                orderPlayers.add(mPlayer);
+            }
+        }
+        orderPlayers = sortByOrder(orderPlayers);
+        return orderPlayers;
+    }
+    public void setOrderPlayers(ArrayList<Player> orderPlayers) {
+//        this.orderPlayers = orderPlayers;
+        for(Player mPlayer : orderPlayers) {
+            players.set(players.indexOf(mPlayer), mPlayer);
+        }
+    }
+
+
+
+    private ArrayList<Player> sortByNumber(ArrayList<Player> sortPlayer) {
+        //依 number 排序
+        Collections.sort(sortPlayer, new Comparator<Player>() {
+            @Override
+            public int compare(Player o1, Player o2) {
+                //return o1.number.compareTo(o2.number);
+                return Integer.parseInt(o1.number) - Integer.parseInt(o2.number);
+            }
+        });
+        return sortPlayer;
+    }
+
+    private ArrayList<Player> sortByOrder(ArrayList<Player> sortPlayer) {
+        //依 number 排序
+        Collections.sort(sortPlayer, new Comparator<Player>() {
+            @Override
+            public int compare(Player o1, Player o2) {
+                return o1.order_id - o2.order_id;
+            }
+        });
+        return sortPlayer;
+    }
 }

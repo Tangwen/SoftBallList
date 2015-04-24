@@ -44,7 +44,7 @@ public class OrderFragment extends Fragment {
         View view = inflater.inflate(R.layout.order_fragment, container, false);
 
         TouchListView mTouchListView = (TouchListView) view.findViewById(R.id.order_list);
-        mOrderListAdapter = new OrderListAdapter(mContext, mActivity, PlayerData.getInstance(mContext).getAllPlayers());
+        mOrderListAdapter = new OrderListAdapter(mContext, mActivity, PlayerData.getInstance(mContext).getOrderPlayers());
         mTouchListView.setAdapter(mOrderListAdapter);
         mTouchListView.setDropListener(onDrop);
         mTouchListView.setRemoveListener(onRemove);
@@ -95,6 +95,7 @@ public class OrderFragment extends Fragment {
             Player item = mOrderListAdapter.getItem(from);
             mOrderListAdapter.remove(item);
             mOrderListAdapter.insert(item, to);
+            PlayerData.getInstance(mContext).setOrderPlayers(mOrderListAdapter.getOrderPlayerArrayList());
         }
     };
 
@@ -102,6 +103,7 @@ public class OrderFragment extends Fragment {
         @Override
         public void remove(int which) {
             mOrderListAdapter.remove(mOrderListAdapter.getItem(which));
+            PlayerData.getInstance(mContext).setOrderPlayers(mOrderListAdapter.getOrderPlayerArrayList());
         }
     };
 

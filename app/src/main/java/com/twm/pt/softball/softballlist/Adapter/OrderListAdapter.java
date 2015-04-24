@@ -20,13 +20,13 @@ import java.util.ArrayList;
 public class OrderListAdapter extends ArrayAdapter<Player> {
     private Context mContext;
     private Activity mActivity;
-    private ArrayList<Player> playerArrayList;
+    private ArrayList<Player> orderPlayerArrayList;
 
     public OrderListAdapter(Context mContext, Activity mActivity, ArrayList<Player> playerArrayList) {
         super(mContext, R.layout.order_row, playerArrayList);
         this.mContext = mContext;
         this.mActivity = mActivity;
-        this.playerArrayList = playerArrayList;
+        this.orderPlayerArrayList = playerArrayList;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -49,12 +49,20 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
         }
 
         holder.order_id.setText(String.valueOf(position+1));
-        holder.positions.setText(playerArrayList.get(position).position.getShortName());
-        holder.name.setText(playerArrayList.get(position).Name);
-        holder.number.setText(playerArrayList.get(position).number);
-
+        holder.positions.setText(orderPlayerArrayList.get(position).position.getShortName());
+        holder.name.setText(orderPlayerArrayList.get(position).Name);
+        holder.number.setText(orderPlayerArrayList.get(position).number);
+        orderPlayerArrayList.get(position).order_id = position + 1;
 
         return (view);
+    }
+
+    public ArrayList<Player> getOrderPlayerArrayList() {
+        return orderPlayerArrayList;
+    }
+
+    public void setOrderPlayerArrayList(ArrayList<Player> orderPlayerArrayList) {
+        this.orderPlayerArrayList = orderPlayerArrayList;
     }
 
     private class ViewHolder {

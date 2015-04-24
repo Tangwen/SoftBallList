@@ -20,6 +20,8 @@ public class Player {
     public boolean present = true;
     /**守備位置*/
     public Position position;
+    /**打擊順序*/
+    public int order_id = 99;
 
 
     public Player(String name, String nickName, String picture, String number, String habits, Fielder fielder) {
@@ -45,9 +47,25 @@ public class Player {
     public boolean isPresent() {
         return present;
     }
-
     public void setPresent(boolean present) {
         this.present = present;
+    }
+    public int getOrder_id() {
+        return order_id;
+    }
+    public void setOrder_id(int order_id) {
+        this.order_id = order_id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+//        return super.equals(o);
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        Player other = (Player) obj;
+        if (number != other.number) return false;
+        return true;
     }
 
     public enum Fielder {

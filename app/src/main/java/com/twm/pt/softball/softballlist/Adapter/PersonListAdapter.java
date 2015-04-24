@@ -53,6 +53,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
             person_habits = (TextView) itemLayoutView.findViewById(R.id.person_habits);
             person_fielder = (TextView) itemLayoutView.findViewById(R.id.person_fielder);
             person_present = (CheckBox) itemLayoutView.findViewById(R.id.person_present);
+            person_present.setOnClickListener(onClickListener);
         }
 
         @Override
@@ -68,6 +69,14 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
                 listener.onClick(view);
             }
         }
+
+        View.OnClickListener onClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                playerArrayList.get(getLayoutPosition()).present = ((CheckBox)view).isChecked();
+                PlayerData.getInstance(mContext).setAllPlayers(playerArrayList);
+            }
+        };
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
