@@ -19,12 +19,15 @@
         />
     <Button
         android:id="@+id/person_positions"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
+        android:layout_width="40dp"
+        android:layout_height="28dp"
         android:layout_marginLeft="10dp"
         android:text="BP"
         android:minEms="2"
+        android:singleLine="true"
+        android:background="@drawable/btn_black"
         />
+
     <TextView android:id="@+id/person_name"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_width="wrap_content"

@@ -1,33 +1,49 @@
 package com.twm.pt.softball.softballlist.Data;
 
+import android.content.Context;
+
+import com.google.gson.reflect.TypeToken;
 import com.twm.pt.softball.softballlist.component.Player;
 import com.twm.pt.softball.softballlist.component.Position;
+import com.twm.pt.softball.softballlist.utility.L;
+import com.twm.pt.softball.softballlist.utility.PreferenceUtils;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 /**
  * Created by TangWen on 2015/4/23.
  */
 public class PlayerData {
-    ArrayList<Player> players = new ArrayList<Player>();
-    public String picPath = "/Pictures/SoftBall/";
+    public static String picPath = "/Pictures/SoftBall/";
+    public static final Type arrayListPlayerType = new TypeToken<ArrayList<Player>>() {}.getType();
+
+    private String sharedPreferencesKey = "PlayerData";
+    private ArrayList<Player> players = new ArrayList<Player>();
+    private Context mContext;
 
     private static PlayerData mPlayerData;
-    public static PlayerData getInstance() {
+    public static PlayerData getInstance(Context mContext) {
         if(mPlayerData==null) {
-            mPlayerData = new PlayerData();
+            mPlayerData = new PlayerData(mContext);
         }
         return mPlayerData;
     }
 
-    public PlayerData() {
+    public PlayerData(Context mContext) {
+        this.mContext = mContext;
         initPlayerData();
     }
 
     private void initPlayerData() {
-        //TODO load Players form json
-
+        L.d("initPlayerData");
+        players = PreferenceUtils.JsonToObject(PreferenceUtils.getValue(mContext, sharedPreferencesKey, ""), arrayListPlayerType);
+        if(players==null) {
+            L.d("players==null");
+            players = new ArrayList<Player>();
+        }
         if(players.size()==0) {
+            L.d("players.size()==0");
             players.add(new Player("陽岱鋼", "YOH桑", "images1.jpg", "1", "R/R", Player.Fielder.outfielder, Position.LeftFielder));
             players.add(new Player("林益全", "第一神全", "images9.jpg", "9", "R/L", Player.Fielder.infielder, Position.ThirdBaseMan));
             players.add(new Player("彭政閔", "恰恰", "images23.jpg", "23", "R/R", Player.Fielder.infielder, Position.FirstBaseMan));
@@ -51,8 +67,8 @@ public class PlayerData {
             player.setPresent(false);
             players.add(player);
 
-
-            //TODO save Players into json
+            PreferenceUtils.setValue(mContext, sharedPreferencesKey, PreferenceUtils.ObjectToJson(players));
+            L.d("PreferenceUtils.setValue");
         }
     }
 

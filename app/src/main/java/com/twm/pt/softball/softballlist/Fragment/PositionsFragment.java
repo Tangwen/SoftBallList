@@ -1,6 +1,8 @@
 package com.twm.pt.softball.softballlist.Fragment;
 
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -18,6 +20,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PositionsFragment extends Fragment {
+    private Context mContext;
+    private Activity mActivity;
+
     private static PositionsFragment newFragment;
     public static PositionsFragment newInstance() {
         if(newFragment==null) {
@@ -30,6 +35,7 @@ public class PositionsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         L.d("TestFragment-----onCreate");
+        mContext = getActivity().getBaseContext();
     }
 
     @Override
@@ -70,6 +76,13 @@ public class PositionsFragment extends Fragment {
         L.d( "TestFragment-----onDestroy");
     }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mActivity = activity;
+    }
+
+
     HashMap<String, TextView> PositionViewMap = new HashMap<>();
     int PositionViewIdArray[] = {R.id.text_P, R.id.text_C, R.id.text_1B, R.id.text_2B, R.id.text_3B, R.id.text_SS, R.id.text_LF, R.id.text_CF, R.id.text_RF, R.id.text_SF, R.id.text_EP};
     private void initPositionView(View view) {
@@ -90,7 +103,7 @@ public class PositionsFragment extends Fragment {
     }
 
     private void setPositionView() {
-        ArrayList<Player> players = PlayerData.getInstance().getAllPlayers();  //待修改 使用 OrderFragment Adapter 的 Array
+        ArrayList<Player> players = PlayerData.getInstance(mContext).getAllPlayers();  //待修改 使用 OrderFragment Adapter 的 Array
         for(Player mPlayer : players) {
             try {
                 TextView tempView = PositionViewMap.get(mPlayer.position.getShortName());

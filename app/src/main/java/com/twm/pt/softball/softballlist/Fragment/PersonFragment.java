@@ -52,7 +52,7 @@ public class PersonFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         GridLayoutManager mGridLayoutManager =new GridLayoutManager(mContext, 3, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(mGridLayoutManager);
-        players = PlayerData.getInstance().getAllPlayers();
+        players = PlayerData.getInstance(mContext).getAllPlayers();
         mAdapter = new PersonListAdapter(mContext, players);
         mRecyclerView.setAdapter(mAdapter);
 
@@ -64,6 +64,7 @@ public class PersonFragment extends Fragment {
     public void onStart() {
     	L.d( "TestFragment-----onStart");
     	super.onStart();
+        setPlayersDataChange();
     }
     
     @Override
@@ -94,4 +95,9 @@ public class PersonFragment extends Fragment {
         mActivity = activity;
     }
 
+    private void setPlayersDataChange() {
+        players = PlayerData.getInstance(mContext).getAllPlayers();
+        mAdapter.setPlayerArrayList(players);
+        mAdapter.notifyDataSetChanged();
+    }
 }

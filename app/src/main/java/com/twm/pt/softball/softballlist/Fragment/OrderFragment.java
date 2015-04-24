@@ -44,7 +44,7 @@ public class OrderFragment extends Fragment {
         View view = inflater.inflate(R.layout.order_fragment, container, false);
 
         TouchListView mTouchListView = (TouchListView) view.findViewById(R.id.order_list);
-        mOrderListAdapter = new OrderListAdapter(mContext, mActivity, PlayerData.getInstance().getAllPlayers());
+        mOrderListAdapter = new OrderListAdapter(mContext, mActivity, PlayerData.getInstance(mContext).getAllPlayers());
         mTouchListView.setAdapter(mOrderListAdapter);
         mTouchListView.setDropListener(onDrop);
         mTouchListView.setRemoveListener(onRemove);

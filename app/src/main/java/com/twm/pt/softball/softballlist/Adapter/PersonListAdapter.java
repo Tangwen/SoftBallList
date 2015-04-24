@@ -74,7 +74,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
     public PersonListAdapter(Context context, ArrayList<Player> playerArrayList) {
         mContext = context;
         this.playerArrayList = playerArrayList;
-        picPath = "file://" + StorageDirectory.getStorageDirectory(mContext, StorageDirectory.StorageType.ST_SDCard_RootDir) + PlayerData.getInstance().picPath;
+        picPath = "file://" + StorageDirectory.getStorageDirectory(mContext, StorageDirectory.StorageType.ST_SDCard_RootDir) + PlayerData.picPath;
     }
 
     // Create new views (invoked by the layout manager)

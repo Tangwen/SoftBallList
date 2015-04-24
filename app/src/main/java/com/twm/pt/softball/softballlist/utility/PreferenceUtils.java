@@ -1,12 +1,16 @@
 package com.twm.pt.softball.softballlist.utility;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
+import java.util.Objects;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.util.Log;
+
+import com.google.gson.Gson;
 
 /**
  * Preference工具类
@@ -246,8 +250,15 @@ public class PreferenceUtils {
     }
 
 
-//    public static String toJson() {
-//        Gson gson = new Gson();
-//        String json = gson.toJson(MyObject);
-//    }
+    public static String ObjectToJson(Object obj) {
+        Gson gson = new Gson();
+        String json = gson.toJson(obj);
+        return json;
+    }
+
+    public static <Object> Object JsonToObject(String json, Type typeOfT) {
+        Gson gson = new Gson();
+        return gson.fromJson(json, typeOfT);
+    }
+
 }
