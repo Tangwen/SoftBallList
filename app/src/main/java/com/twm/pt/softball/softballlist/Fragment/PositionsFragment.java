@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.twm.pt.softball.softballlist.Data.PlayerData;
+import com.twm.pt.softball.softballlist.Manager.PlayerDataManager;
 import com.twm.pt.softball.softballlist.R;
 import com.twm.pt.softball.softballlist.component.Player;
 import com.twm.pt.softball.softballlist.component.Position;
@@ -103,7 +103,7 @@ public class PositionsFragment extends Fragment {
     }
 
     private void setPositionView() {
-        ArrayList<Player> players = PlayerData.getInstance(mContext).getAllPlayers();  //待修改 使用 OrderFragment Adapter 的 Array
+        ArrayList<Player> players = PlayerDataManager.getInstance(mContext).getAllPlayers();  //待修改 使用 OrderFragment Adapter 的 Array
         for(Player mPlayer : players) {
             try {
                 TextView tempView = PositionViewMap.get(mPlayer.position.getShortName());

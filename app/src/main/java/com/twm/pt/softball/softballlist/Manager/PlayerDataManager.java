@@ -1,4 +1,4 @@
-package com.twm.pt.softball.softballlist.Data;
+package com.twm.pt.softball.softballlist.Manager;
 
 import android.content.Context;
 
@@ -16,24 +16,25 @@ import java.util.Comparator;
 /**
  * Created by TangWen on 2015/4/23.
  */
-public class PlayerData {
+public class PlayerDataManager {
     public static String picPath = "/Pictures/SoftBall/";
     public static final Type arrayListPlayerType = new TypeToken<ArrayList<Player>>() {}.getType();
 
     private String sharedPreferencesKey = "PlayerData";
-    private ArrayList<Player> players = new ArrayList<Player>();
-//    private ArrayList<Player> orderPlayers = new ArrayList<Player>();
+    private ArrayList<Player> players = new ArrayList<>();
+    private ArrayList<onPlayerChangeListener> mAllPlayerListener = new ArrayList<>();
+    private ArrayList<onPlayerChangeListener> mOrderPlayerListener = new ArrayList<>();
     private Context mContext;
 
-    private static PlayerData mPlayerData;
-    public static PlayerData getInstance(Context mContext) {
-        if(mPlayerData==null) {
-            mPlayerData = new PlayerData(mContext);
+    private static PlayerDataManager mPlayerDataManager;
+    public static PlayerDataManager getInstance(Context mContext) {
+        if(mPlayerDataManager ==null) {
+            mPlayerDataManager = new PlayerDataManager(mContext);
         }
-        return mPlayerData;
+        return mPlayerDataManager;
     }
 
-    public PlayerData(Context mContext) {
+    public PlayerDataManager(Context mContext) {
         this.mContext = mContext;
         initPlayerData();
     }
@@ -88,7 +89,26 @@ public class PlayerData {
         this.players = players;
         players = sortByNumber(players);
         SavePlayer();
+        for(onPlayerChangeListener mListener : mAllPlayerListener) {
+            mListener.onChange(players);
+        }
     }
+    public void addAllPlayers(Player mPlayer) {
+        players.add(mPlayer);
+        setAllPlayers(players);
+    }
+    public void removePlayers(Player mPlayer) {
+        players.remove(mPlayer);
+        setAllPlayers(players);
+    }
+    public void setAllPlayersOnChangeListener(onPlayerChangeListener mListener) {
+        mAllPlayerListener.add(mListener);
+    }
+    public void removeAllPlayersOnChangeListener(onPlayerChangeListener mListener) {
+        mAllPlayerListener.remove(mListener);
+    }
+
+
 
     public ArrayList<Player> getOrderPlayers() {
         ArrayList<Player> orderPlayers = new ArrayList<Player>();
@@ -101,10 +121,20 @@ public class PlayerData {
         return orderPlayers;
     }
     public void setOrderPlayers(ArrayList<Player> orderPlayers) {
-//        this.orderPlayers = orderPlayers;
         for(Player mPlayer : orderPlayers) {
             players.set(players.indexOf(mPlayer), mPlayer);
         }
+        SavePlayer();
+        ArrayList<Player> newOrderPlayers = getOrderPlayers();
+        for(onPlayerChangeListener mListener : mOrderPlayerListener) {
+            mListener.onChange(newOrderPlayers);
+        }
+    }
+    public void setOrderPlayersOnChangeListener(onPlayerChangeListener mListener) {
+        mOrderPlayerListener.add(mListener);
+    }
+    public void removeOrderPlayersOnChangeListener(onPlayerChangeListener mListener) {
+        mOrderPlayerListener.remove(mListener);
     }
 
 
@@ -130,5 +160,10 @@ public class PlayerData {
             }
         });
         return sortPlayer;
+    }
+
+
+    public interface onPlayerChangeListener {
+        void onChange(ArrayList<Player> players);
     }
 }

@@ -62,6 +62,10 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
     }
 
     public void setOrderPlayerArrayList(ArrayList<Player> orderPlayerArrayList) {
+        clear();
+        for(Player player:orderPlayerArrayList) {
+            add(player);
+        }
         this.orderPlayerArrayList = orderPlayerArrayList;
     }
 

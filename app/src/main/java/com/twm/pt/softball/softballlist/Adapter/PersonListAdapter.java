@@ -10,10 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.twm.pt.softball.softballlist.Data.PlayerData;
+import com.twm.pt.softball.softballlist.Manager.PlayerDataManager;
 import com.twm.pt.softball.softballlist.R;
 import com.twm.pt.softball.softballlist.component.Player;
-import com.twm.pt.softball.softballlist.utility.L;
 import com.twm.pt.softball.softballlist.utility.StorageDirectory;
 
 import java.util.ArrayList;
@@ -74,7 +73,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
             @Override
             public void onClick(View view) {
                 playerArrayList.get(getLayoutPosition()).present = ((CheckBox)view).isChecked();
-                PlayerData.getInstance(mContext).setAllPlayers(playerArrayList);
+                PlayerDataManager.getInstance(mContext).setAllPlayers(playerArrayList);
             }
         };
     }
@@ -83,7 +82,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
     public PersonListAdapter(Context context, ArrayList<Player> playerArrayList) {
         mContext = context;
         this.playerArrayList = playerArrayList;
-        picPath = "file://" + StorageDirectory.getStorageDirectory(mContext, StorageDirectory.StorageType.ST_SDCard_RootDir) + PlayerData.picPath;
+        picPath = "file://" + StorageDirectory.getStorageDirectory(mContext, StorageDirectory.StorageType.ST_SDCard_RootDir) + PlayerDataManager.picPath;
     }
 
     // Create new views (invoked by the layout manager)
@@ -121,8 +120,11 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
         return playerArrayList.size();
     }
 
-    public void addOnClickListener(View.OnClickListener mListener) {
+    public void setOnClickListener(View.OnClickListener mListener) {
         this.mListener.add(mListener);
+    }
+    public void removeOnClickListener(View.OnClickListener mListener) {
+        this.mListener.remove(mListener);
     }
 
     public void setPlayerArrayList(ArrayList<Player> playerArrayList) {

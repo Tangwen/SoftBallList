@@ -13,10 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.twm.pt.softball.softballlist.Adapter.PersonListAdapter;
+import com.twm.pt.softball.softballlist.Manager.PlayerDataManager;
 import com.twm.pt.softball.softballlist.R;
 import com.twm.pt.softball.softballlist.component.Player;
 import com.twm.pt.softball.softballlist.utility.L;
-import com.twm.pt.softball.softballlist.Data.PlayerData;
 
 import java.util.ArrayList;
 
@@ -26,6 +26,7 @@ public class PersonFragment extends Fragment {
     ArrayList<Player> players = new ArrayList<>();
     private Context mContext;
     private Activity mActivity;
+    private PlayerDataManager mPlayerDataManager;
 
     private static PersonFragment newFragment;
     public static PersonFragment newInstance() {
@@ -40,6 +41,7 @@ public class PersonFragment extends Fragment {
         super.onCreate(savedInstanceState);
         L.d("TestFragment-----onCreate");
         mContext = getActivity().getBaseContext();
+        mPlayerDataManager = PlayerDataManager.getInstance(mContext);
     }
 
     @Override
@@ -52,7 +54,7 @@ public class PersonFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         GridLayoutManager mGridLayoutManager =new GridLayoutManager(mContext, 3, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(mGridLayoutManager);
-        players = PlayerData.getInstance(mContext).getAllPlayers();
+        players = mPlayerDataManager.getAllPlayers();
         mAdapter = new PersonListAdapter(mContext, players);
         mRecyclerView.setAdapter(mAdapter);
 
@@ -96,7 +98,7 @@ public class PersonFragment extends Fragment {
     }
 
     private void setPlayersDataChange() {
-        players = PlayerData.getInstance(mContext).getAllPlayers();
+        players = mPlayerDataManager.getAllPlayers();
         mAdapter.setPlayerArrayList(players);
         mAdapter.notifyDataSetChanged();
     }
