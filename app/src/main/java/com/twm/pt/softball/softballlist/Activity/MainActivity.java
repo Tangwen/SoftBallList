@@ -1,4 +1,4 @@
-package com.twm.pt.softball.softballlist;
+package com.twm.pt.softball.softballlist.Activity;
 
 import android.content.res.Resources;
 import android.support.v4.view.ViewPager;
@@ -18,6 +18,7 @@ import com.twm.pt.softball.softballlist.Adapter.MyFragmentPagerAdapter;
 import com.twm.pt.softball.softballlist.Fragment.OrderFragment;
 import com.twm.pt.softball.softballlist.Fragment.PersonFragment;
 import com.twm.pt.softball.softballlist.Fragment.PositionsFragment;
+import com.twm.pt.softball.softballlist.R;
 import com.twm.pt.softball.softballlist.utility.L;
 
 import java.util.ArrayList;

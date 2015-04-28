@@ -42,6 +42,7 @@ public class OrderFragment extends Fragment {
         mContext = getActivity().getBaseContext();
         mPlayerDataManager = PlayerDataManager.getInstance(mContext);
         mPlayerDataManager.setAllPlayersOnChangeListener(allPlayersOnChangeListener);
+        mPlayerDataManager.setOrderPlayersOnChangeListener(orderPlayersOnChangeListener);
     }
 
     @Override
@@ -84,6 +85,8 @@ public class OrderFragment extends Fragment {
 
     @Override
     public void onDestroy() {
+        mPlayerDataManager.removeAllPlayersOnChangeListener(allPlayersOnChangeListener);
+        mPlayerDataManager.removeOrderPlayersOnChangeListener(orderPlayersOnChangeListener);
         super.onDestroy();
         L.d("TestFragment-----onDestroy");
     }
@@ -116,9 +119,15 @@ public class OrderFragment extends Fragment {
     private PlayerDataManager.onPlayerChangeListener allPlayersOnChangeListener = new PlayerDataManager.onPlayerChangeListener() {
         @Override
         public void onChange(ArrayList<Player> players) {
-            L.d("mPlayerDataManager.getOrderPlayers() size=" + mPlayerDataManager.getOrderPlayers().size());
             mOrderListAdapter.setOrderPlayerArrayList(mPlayerDataManager.getOrderPlayers());
             mOrderListAdapter.notifyDataSetChanged();
+        }
+    };
+
+    private PlayerDataManager.onPlayerChangeListener orderPlayersOnChangeListener = new PlayerDataManager.onPlayerChangeListener() {
+        @Override
+        public void onChange(ArrayList<Player> players) {
+
         }
     };
 

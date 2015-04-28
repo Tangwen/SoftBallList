@@ -22,6 +22,7 @@ import java.util.HashMap;
 public class PositionsFragment extends Fragment {
     private Context mContext;
     private Activity mActivity;
+    private PlayerDataManager mPlayerDataManager;
 
     private static PositionsFragment newFragment;
     public static PositionsFragment newInstance() {
@@ -36,6 +37,9 @@ public class PositionsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         L.d("TestFragment-----onCreate");
         mContext = getActivity().getBaseContext();
+        mPlayerDataManager = PlayerDataManager.getInstance(mContext);
+        mPlayerDataManager.setAllPlayersOnChangeListener(allPlayersOnChangeListener);
+        mPlayerDataManager.setOrderPlayersOnChangeListener(orderPlayersOnChangeListener);
     }
 
     @Override
@@ -72,6 +76,8 @@ public class PositionsFragment extends Fragment {
     }
     @Override
     public void onDestroy() {
+        mPlayerDataManager.removeAllPlayersOnChangeListener(allPlayersOnChangeListener);
+        mPlayerDataManager.removeOrderPlayersOnChangeListener(orderPlayersOnChangeListener);
         super.onDestroy();
         L.d( "TestFragment-----onDestroy");
     }
@@ -103,7 +109,7 @@ public class PositionsFragment extends Fragment {
     }
 
     private void setPositionView() {
-        ArrayList<Player> players = PlayerDataManager.getInstance(mContext).getAllPlayers();  //待修改 使用 OrderFragment Adapter 的 Array
+        ArrayList<Player> players = mPlayerDataManager.getOrderPlayers();  //待修改 使用 OrderFragment Adapter 的 Array
         for(Player mPlayer : players) {
             try {
                 TextView tempView = PositionViewMap.get(mPlayer.position.getShortName());
@@ -115,4 +121,19 @@ public class PositionsFragment extends Fragment {
             }
         }
     }
+
+
+    private PlayerDataManager.onPlayerChangeListener allPlayersOnChangeListener = new PlayerDataManager.onPlayerChangeListener() {
+        @Override
+        public void onChange(ArrayList<Player> players) {
+
+        }
+    };
+
+    private PlayerDataManager.onPlayerChangeListener orderPlayersOnChangeListener = new PlayerDataManager.onPlayerChangeListener() {
+        @Override
+        public void onChange(ArrayList<Player> players) {
+
+        }
+    };
 }

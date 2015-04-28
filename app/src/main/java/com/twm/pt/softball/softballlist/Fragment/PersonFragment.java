@@ -42,6 +42,8 @@ public class PersonFragment extends Fragment {
         L.d("TestFragment-----onCreate");
         mContext = getActivity().getBaseContext();
         mPlayerDataManager = PlayerDataManager.getInstance(mContext);
+        mPlayerDataManager.setAllPlayersOnChangeListener(allPlayersOnChangeListener);
+        mPlayerDataManager.setOrderPlayersOnChangeListener(orderPlayersOnChangeListener);
     }
 
     @Override
@@ -87,6 +89,8 @@ public class PersonFragment extends Fragment {
     }
     @Override
     public void onDestroy() {
+        mPlayerDataManager.removeAllPlayersOnChangeListener(allPlayersOnChangeListener);
+        mPlayerDataManager.removeOrderPlayersOnChangeListener(orderPlayersOnChangeListener);
         super.onDestroy();
         L.d( "TestFragment-----onDestroy");
     }
@@ -102,4 +106,19 @@ public class PersonFragment extends Fragment {
         mAdapter.setPlayerArrayList(players);
         mAdapter.notifyDataSetChanged();
     }
+
+    private PlayerDataManager.onPlayerChangeListener allPlayersOnChangeListener = new PlayerDataManager.onPlayerChangeListener() {
+        @Override
+        public void onChange(ArrayList<Player> players) {
+            mAdapter.setPlayerArrayList(mPlayerDataManager.getAllPlayers());
+            mAdapter.notifyDataSetChanged();
+        }
+    };
+
+    private PlayerDataManager.onPlayerChangeListener orderPlayersOnChangeListener = new PlayerDataManager.onPlayerChangeListener() {
+        @Override
+        public void onChange(ArrayList<Player> players) {
+
+        }
+    };
 }
