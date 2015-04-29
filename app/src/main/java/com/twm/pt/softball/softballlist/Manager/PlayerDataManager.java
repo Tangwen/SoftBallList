@@ -19,6 +19,7 @@ import java.util.Comparator;
 public class PlayerDataManager {
     public static String picPath = "/Pictures/SoftBall/";
     public static final Type arrayListPlayerType = new TypeToken<ArrayList<Player>>() {}.getType();
+    public static final String BP_number = "444";
 
     private String sharedPreferencesKey = "PlayerData";
     private ArrayList<Player> players = new ArrayList<>();
@@ -42,7 +43,7 @@ public class PlayerDataManager {
     private void LoadPlayers() {
         players = PreferenceUtils.JsonToObject(PreferenceUtils.getValue(mContext, sharedPreferencesKey, ""), arrayListPlayerType);
     }
-    private void SavePlayer() {
+    public void SavePlayer() {
         PreferenceUtils.setValue(mContext, sharedPreferencesKey, PreferenceUtils.ObjectToJson(players));
     }
 
@@ -51,6 +52,7 @@ public class PlayerDataManager {
         if(players==null) {
             players = new ArrayList<Player>();
         }
+
         if(players.size()==0) {
             L.d("players.size()==0");
             players.add(new Player("陽岱鋼", "YOH桑", "images1.jpg", "1", "R/R", Player.Fielder.outfielder, Position.LeftFielder));
@@ -65,6 +67,7 @@ public class PlayerDataManager {
             players.add(new Player("郭嚴文", "超級喜歡", "images21.jpg", "21", "R/L", Player.Fielder.infielder, Position.SecondBaseMan));
             players.add(new Player("潘威倫", "嘟嘟", "images18.jpg", "18", "R/R", Player.Fielder.pitcher, Position.Pitcher));
 
+
             Player player = null;
             player = new Player("張正偉", "花花", "images59.jpg", "59", "L/L", Player.Fielder.outfielder, Position.BenchPlayer);
             player.setPresent(false);
@@ -76,17 +79,30 @@ public class PlayerDataManager {
             player.setPresent(false);
             players.add(player);
 
+            player = new Player("預備球員", "預備BAR", "", BP_number, "A/A", Player.Fielder.all_fielder, Position.BenchPlayer);
+            player.setPresent(false);
             SavePlayer();
         }
     }
 
 
     public ArrayList<Player> getAllPlayers() {
-        players = sortByNumber(players);
-        return players;
+        ArrayList<Player> allPlayers = new ArrayList<Player>();
+        for(Player mPlayer : players) {
+            if(!mPlayer.number.equals(BP_number)) { //去除預備球員bar
+                allPlayers.add(mPlayer);
+            }
+        }
+        allPlayers = sortByNumber(allPlayers);
+        return allPlayers;
     }
-    public void setAllPlayers(ArrayList<Player> players) {
-        this.players = players;
+    public void setAllPlayers(ArrayList<Player> allPlayers) {
+        for(Player mPlayer : players) {
+            if(mPlayer.number.equals(BP_number)) {
+                allPlayers.add(mPlayer);
+            }
+        }
+        players = allPlayers;
         players = sortByNumber(players);
         SavePlayer();
         for(onPlayerChangeListener mListener : mAllPlayerListener) {

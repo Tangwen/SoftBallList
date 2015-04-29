@@ -26,6 +26,7 @@ public class OrderFragment extends Fragment {
     private Context mContext;
     private Activity mActivity;
     private PlayerDataManager mPlayerDataManager;
+    private TouchListView mTouchListView;
 
     private static OrderFragment newFragment;
     public static OrderFragment newInstance() {
@@ -50,7 +51,7 @@ public class OrderFragment extends Fragment {
         L.d("TestFragment-----onCreateView");
         View view = inflater.inflate(R.layout.order_fragment, container, false);
 
-        TouchListView mTouchListView = (TouchListView) view.findViewById(R.id.order_list);
+        mTouchListView = (TouchListView) view.findViewById(R.id.order_list);
         mOrderListAdapter = new OrderListAdapter(mContext, mActivity, mPlayerDataManager.getOrderPlayers());
         mTouchListView.setAdapter(mOrderListAdapter);
         mTouchListView.setDropListener(onDrop);
@@ -119,8 +120,10 @@ public class OrderFragment extends Fragment {
     private PlayerDataManager.onPlayerChangeListener allPlayersOnChangeListener = new PlayerDataManager.onPlayerChangeListener() {
         @Override
         public void onChange(ArrayList<Player> players) {
-            mOrderListAdapter.setOrderPlayerArrayList(mPlayerDataManager.getOrderPlayers());
-            mOrderListAdapter.notifyDataSetChanged();
+            //mOrderListAdapter.setOrderPlayerArrayList(mPlayerDataManager.getOrderPlayers());
+            //mOrderListAdapter.notifyDataSetChanged();
+            mOrderListAdapter = new OrderListAdapter(mContext, mActivity, mPlayerDataManager.getOrderPlayers());
+            mTouchListView.setAdapter(mOrderListAdapter);
         }
     };
 

@@ -7,8 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.twm.pt.softball.softballlist.Manager.PlayerDataManager;
 import com.twm.pt.softball.softballlist.R;
 import com.twm.pt.softball.softballlist.component.Player;
 
@@ -37,43 +39,60 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
             view = inflater.inflate(R.layout.order_row, parent, false);
 
             holder = new ViewHolder();
+
+            holder.order_row = (LinearLayout) view.findViewById(R.id.order_row);
             holder.order_id = (TextView) view.findViewById(R.id.order_id);
             holder.positions = (Button) view.findViewById(R.id.person_positions);
             holder.name = (TextView) view.findViewById(R.id.person_name);
             holder.number = (TextView) view.findViewById(R.id.person_number);
             holder.average = (TextView) view.findViewById(R.id.person_average);
+            holder.bp_row = (LinearLayout) view.findViewById(R.id.bp_row);
+            holder.bp_name = (TextView) view.findViewById(R.id.bp_name);
+
 
             view.setTag(holder);
         } else {
             holder = (ViewHolder)view.getTag();
         }
 
-        holder.order_id.setText(String.valueOf(position+1));
-        holder.positions.setText(orderPlayerArrayList.get(position).position.getShortName());
-        holder.name.setText(orderPlayerArrayList.get(position).Name);
-        holder.number.setText(orderPlayerArrayList.get(position).number);
-        orderPlayerArrayList.get(position).order_id = position + 1;
+        if(orderPlayerArrayList.get(position).number.equals(PlayerDataManager.BP_number)) {
+            holder.order_row.setVisibility(View.GONE);
+            holder.bp_row.setVisibility(View.VISIBLE);
+            holder.bp_name.setText(orderPlayerArrayList.get(position).Name);
+        } else {
+            holder.order_row.setVisibility(View.VISIBLE);
+            holder.bp_row.setVisibility(View.GONE);
+            holder.order_id.setText(String.valueOf(position+1));
+            holder.positions.setText(orderPlayerArrayList.get(position).position.getShortName());
+            holder.name.setText(orderPlayerArrayList.get(position).Name);
+            holder.number.setText(orderPlayerArrayList.get(position).number);
+            orderPlayerArrayList.get(position).order_id = position + 1;
+        }
 
         return (view);
     }
+
 
     public ArrayList<Player> getOrderPlayerArrayList() {
         return orderPlayerArrayList;
     }
 
-    public void setOrderPlayerArrayList(ArrayList<Player> orderPlayerArrayList) {
-        clear();
-        for(Player player:orderPlayerArrayList) {
-            add(player);
-        }
-        this.orderPlayerArrayList = orderPlayerArrayList;
-    }
+//    public void setOrderPlayerArrayList(ArrayList<Player> orderPlayerArrayList) {
+//        clear();
+//        for(Player player:orderPlayerArrayList) {
+//            add(player);
+//        }
+//        this.orderPlayerArrayList = orderPlayerArrayList;
+//    }
 
     private class ViewHolder {
+        LinearLayout order_row;
         TextView order_id;
         Button positions;
         TextView name;
         TextView number;
         TextView average;
+        LinearLayout bp_row;
+        TextView bp_name;
     };
 }
