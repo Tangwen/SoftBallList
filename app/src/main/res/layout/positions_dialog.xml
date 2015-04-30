@@ -15,14 +15,14 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="20dp">
-        <TextView
-            android:id="@+id/text_CF"
+        <Button
+            android:id="@+id/button_CF"
             style="@style/PositionsText"
             android:gravity="right"
             android:paddingRight="40dp"
             android:text="CF"/>
-        <TextView
-            android:id="@+id/text_SF"
+        <Button
+            android:id="@+id/button_SF"
             style="@style/PositionsText"
             android:gravity="left"
             android:paddingLeft="40dp"
@@ -32,14 +32,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp">
-        <TextView
-            android:id="@+id/text_LF"
+        <Button
+            android:id="@+id/button_LF"
             style="@style/PositionsText"
             android:gravity="left"
             android:paddingLeft="30dp"
             android:text="LF"/>
-        <TextView
-            android:id="@+id/text_RF"
+        <Button
+            android:id="@+id/button_RF"
             style="@style/PositionsText"
             android:gravity="right"
             android:paddingRight="30dp"
@@ -50,14 +50,14 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="30dp">
-        <TextView
-            android:id="@+id/text_SS"
+        <Button
+            android:id="@+id/button_SS"
             style="@style/PositionsText"
             android:gravity="right"
             android:paddingRight="40dp"
             android:text="SS"/>
-        <TextView
-            android:id="@+id/text_2B"
+        <Button
+            android:id="@+id/button_2B"
             style="@style/PositionsText"
             android:gravity="left"
             android:paddingLeft="40dp"
@@ -67,20 +67,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginBottom="60dp">
-        <TextView
-            android:id="@+id/text_3B"
+        android:layout_marginBottom="70dp">
+        <Button
+            android:id="@+id/button_3B"
             style="@style/PositionsText"
             android:gravity="right"
             android:paddingRight="10dp"
             android:text="3B"/>
-        <TextView
-            android:id="@+id/text_P"
+        <Button
+            android:id="@+id/button_P"
             style="@style/PositionsText"
             android:gravity="center"
             android:text="P"/>
-        <TextView
-            android:id="@+id/text_1B"
+        <Button
+            android:id="@+id/button_1B"
             style="@style/PositionsText"
             android:gravity="left"
             android:paddingLeft="10dp"
@@ -90,28 +90,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp">
-        <TextView
-            android:id="@+id/text_EP"
+        <Button
+            android:id="@+id/button_EP"
             style="@style/PositionsText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="left|center_vertical"
+            android:layout_gravity="left"
             android:paddingLeft="20dp"
             android:text="EP"/>
-        <TextView
-            android:id="@+id/text_C"
+        <Button
+            android:id="@+id/button_C"
             style="@style/PositionsText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="C"/>
-        <ImageView
-            android:id="@+id/button_switch"
-            style="@style/PositionsText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right|center_vertical"
-            android:layout_marginRight="20dp"
-            android:src="@mipmap/hat_baseball_blue_icon" />
     </FrameLayout>
 </LinearLayout>

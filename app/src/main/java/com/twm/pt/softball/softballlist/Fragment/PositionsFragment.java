@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.twm.pt.softball.softballlist.Manager.PlayerDataManager;
@@ -23,6 +24,10 @@ public class PositionsFragment extends Fragment {
     private Context mContext;
     private Activity mActivity;
     private PlayerDataManager mPlayerDataManager;
+    private SwitchDisplay switch_id = SwitchDisplay.Name;
+
+    private HashMap<String, TextView> PositionViewMap = new HashMap<>();
+    private ImageView buttonSwitch;
 
     private static PositionsFragment newFragment;
     public static PositionsFragment newInstance() {
@@ -47,20 +52,22 @@ public class PositionsFragment extends Fragment {
         L.d( "TestFragment-----onCreateView");
         View view = inflater.inflate(R.layout.positions_fragment, container, false);
         initPositionView(view);
+        initSwitchView(view);
         return view;
 
     }
 
     @Override
     public void onStart() {
-    	L.d( "TestFragment-----onStart");
+    	L.d("TestFragment-----onStart");
     	super.onStart();
         setPositionView();
+        setSwitchView();
     }
     
     @Override
     public void onResume() {
-    	L.d( "TestFragment-----onResume");
+    	L.d("TestFragment-----onResume");
     	super.onResume();
     }
     
@@ -79,7 +86,7 @@ public class PositionsFragment extends Fragment {
         mPlayerDataManager.removeAllPlayersOnChangeListener(allPlayersOnChangeListener);
         mPlayerDataManager.removeOrderPlayersOnChangeListener(orderPlayersOnChangeListener);
         super.onDestroy();
-        L.d( "TestFragment-----onDestroy");
+        L.d("TestFragment-----onDestroy");
     }
 
     @Override
@@ -89,7 +96,7 @@ public class PositionsFragment extends Fragment {
     }
 
 
-    HashMap<String, TextView> PositionViewMap = new HashMap<>();
+
     int PositionViewIdArray[] = {R.id.text_P, R.id.text_C, R.id.text_1B, R.id.text_2B, R.id.text_3B, R.id.text_SS, R.id.text_LF, R.id.text_CF, R.id.text_RF, R.id.text_SF, R.id.text_EP};
     private void initPositionView(View view) {
         for (Position mPosition : Position.values()) {
@@ -108,19 +115,48 @@ public class PositionsFragment extends Fragment {
         }
     }
 
+    private void initSwitchView(View view) {
+        buttonSwitch =  (ImageView) view.findViewById(R.id.button_switch);
+        buttonSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch_id = switch_id.next();
+                setSwitchView();
+                setPositionView();
+            }
+        });
+    }
+
     private void setPositionView() {
         ArrayList<Player> players = mPlayerDataManager.getOrderPlayers();
         for(Player mPlayer : players) {
             try {
                 TextView tempView = PositionViewMap.get(mPlayer.position.getShortName());
                 if(tempView!=null) {
-                    tempView.setText(mPlayer.Name);
+                    tempView.setText(getTextContext(mPlayer));
                 }
             } catch (Exception e) {
                 L.e(e);
             }
         }
     }
+    private String getTextContext(Player mPlayer) {
+        switch (switch_id) {
+            case Name:
+                return mPlayer.Name;
+            case NickName:
+                return mPlayer.nickName;
+            case Number:
+                return "[" + mPlayer.number + "]";
+            default:
+                return mPlayer.Name;
+        }
+    }
+
+    private void setSwitchView() {
+        buttonSwitch.setImageResource(switch_id.getImageId());
+    }
+
 
 
     private PlayerDataManager.onPlayerChangeListener allPlayersOnChangeListener = new PlayerDataManager.onPlayerChangeListener() {
@@ -136,4 +172,41 @@ public class PositionsFragment extends Fragment {
 
         }
     };
+
+
+
+    enum SwitchDisplay {
+        Name(0),
+        NickName(1),
+        Number(2);
+
+        int value = 0;
+        int imageId[] = {R.mipmap.hat_baseball_blue_icon, R.mipmap.hat_baseball_green_icon, R.mipmap.hat_baseball_red_icon};
+        SwitchDisplay(int value) {
+            this.value = value;
+        }
+        public int getValue() {
+            return value;
+        }
+        public int getImageId() {
+            return imageId[value];
+        }
+        public SwitchDisplay lookup(int val) {
+            for(SwitchDisplay obj: SwitchDisplay.values()) {
+                if(obj.getValue()  == val) {
+                    return obj;
+                }
+            }
+            return null;
+        }
+
+        public SwitchDisplay next() {
+            for(SwitchDisplay obj: SwitchDisplay.values()) {
+                if(obj.getValue()  == value+1) {
+                    return obj;
+                }
+            }
+            return Name;
+        }
+    }
 }
