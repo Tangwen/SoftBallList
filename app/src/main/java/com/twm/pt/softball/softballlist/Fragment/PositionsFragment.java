@@ -109,7 +109,7 @@ public class PositionsFragment extends Fragment {
     }
 
     private void setPositionView() {
-        ArrayList<Player> players = mPlayerDataManager.getOrderPlayers();  //待修改 使用 OrderFragment Adapter 的 Array
+        ArrayList<Player> players = mPlayerDataManager.getOrderPlayers();
         for(Player mPlayer : players) {
             try {
                 TextView tempView = PositionViewMap.get(mPlayer.position.getShortName());

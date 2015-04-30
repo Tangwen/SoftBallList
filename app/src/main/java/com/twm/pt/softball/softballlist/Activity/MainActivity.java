@@ -18,6 +18,7 @@ import com.twm.pt.softball.softballlist.Adapter.MyFragmentPagerAdapter;
 import com.twm.pt.softball.softballlist.Fragment.OrderFragment;
 import com.twm.pt.softball.softballlist.Fragment.PersonFragment;
 import com.twm.pt.softball.softballlist.Fragment.PositionsFragment;
+import com.twm.pt.softball.softballlist.Manager.PlayerDataManager;
 import com.twm.pt.softball.softballlist.R;
 import com.twm.pt.softball.softballlist.utility.L;
 
@@ -48,6 +49,7 @@ public class MainActivity extends ActionBarActivity {
 
         setContentView(R.layout.activity_main);
         resources = getResources();
+        PlayerDataManager.getInstance(getApplicationContext()).LoadPlayers();
 
         InitWidth();
         InitTextView();
@@ -58,6 +60,11 @@ public class MainActivity extends ActionBarActivity {
 //        L.d("ST_SDCard_RootDir=" + StorageDirectory.getStorageDirectory(getBaseContext(), StorageDirectory.StorageType.ST_SDCard_RootDir));
     }
 
+    @Override
+    protected void onDestroy() {
+        PlayerDataManager.getInstance(getApplicationContext()).SavePlayer();
+        super.onDestroy();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

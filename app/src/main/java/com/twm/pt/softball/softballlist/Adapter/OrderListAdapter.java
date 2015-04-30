@@ -55,18 +55,20 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
             holder = (ViewHolder)view.getTag();
         }
 
-        if(orderPlayerArrayList.get(position).number.equals(PlayerDataManager.BP_number)) {
+        Player mPlayer = orderPlayerArrayList.get(position);
+
+        if(mPlayer.number.equals(PlayerDataManager.BP_number)) {
             holder.order_row.setVisibility(View.GONE);
             holder.bp_row.setVisibility(View.VISIBLE);
-            holder.bp_name.setText(orderPlayerArrayList.get(position).Name);
+            holder.bp_name.setText(mPlayer.Name);
         } else {
             holder.order_row.setVisibility(View.VISIBLE);
             holder.bp_row.setVisibility(View.GONE);
             holder.order_id.setText(String.valueOf(position+1));
-            holder.positions.setText(orderPlayerArrayList.get(position).position.getShortName());
-            holder.name.setText(orderPlayerArrayList.get(position).Name);
-            holder.number.setText(orderPlayerArrayList.get(position).number);
-            orderPlayerArrayList.get(position).order_id = position + 1;
+            holder.positions.setText(mPlayer.position.getShortName());
+            holder.name.setText(mPlayer.Name);
+            holder.number.setText(mPlayer.number);
+            mPlayer.order_id = position + 1;
         }
 
         return (view);

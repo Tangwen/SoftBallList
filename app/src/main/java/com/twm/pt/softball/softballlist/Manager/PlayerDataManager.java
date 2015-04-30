@@ -40,7 +40,7 @@ public class PlayerDataManager {
         initPlayerData();
     }
 
-    private void LoadPlayers() {
+    public void LoadPlayers() {
         players = PreferenceUtils.JsonToObject(PreferenceUtils.getValue(mContext, sharedPreferencesKey, ""), arrayListPlayerType);
     }
     public void SavePlayer() {
