@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.twm.pt.softball.softballlist.Fragment.PaidDialogFragment;
 import com.twm.pt.softball.softballlist.Fragment.PositionsDialogFragment;
 import com.twm.pt.softball.softballlist.Manager.PlayerDataManager;
 import com.twm.pt.softball.softballlist.R;
@@ -57,6 +58,7 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
             holder.bp_name = (TextView) view.findViewById(R.id.bp_name);
 
             holder.positions.setOnClickListener(positionsClick);
+            holder.average.setOnClickListener(averageClick);
 
             view.setTag(holder);
         } else {
@@ -128,11 +130,18 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
         @Override
         public void onClick(View view) {
             Player mPlayer = (Player) view.getTag();
-            showDialogFragment(mPlayer);
+            showPositionDialogFragment(mPlayer);
         }
     };
 
-    private void showDialogFragment(Player mPlayer) {
+    View.OnClickListener averageClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            showPaidDialogFragment();
+        }
+    };
+
+    private void showPositionDialogFragment(Player mPlayer) {
         int[] positionCountArrayList = getPositionCountArrayList();
         PositionsDialogFragment positionsDialogFragment = new PositionsDialogFragment();
         Bundle mBundle = new Bundle();
@@ -143,6 +152,10 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
         positionsDialogFragment.show(mFragmentManager, "PositionsDialogFragment");
     }
 
+    private void showPaidDialogFragment() {
+        PaidDialogFragment paidDialogFragment = new PaidDialogFragment();
+        paidDialogFragment.show(mFragmentManager, "PaidDialogFragment");
+    }
 
     public ArrayList<Player> getOrderPlayerArrayList() {
         return orderPlayerArrayList;

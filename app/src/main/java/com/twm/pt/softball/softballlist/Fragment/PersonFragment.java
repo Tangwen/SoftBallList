@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.twm.pt.softball.softballlist.Adapter.PersonListAdapter;
 import com.twm.pt.softball.softballlist.Manager.PlayerDataManager;
@@ -21,9 +22,10 @@ import com.twm.pt.softball.softballlist.utility.L;
 import java.util.ArrayList;
 
 public class PersonFragment extends Fragment {
-    RecyclerView mRecyclerView;
-    PersonListAdapter mAdapter;
-    ArrayList<Player> players = new ArrayList<>();
+    private RecyclerView mRecyclerView;
+    private PersonListAdapter mAdapter;
+    private ImageView plus_person;
+    private ArrayList<Player> players = new ArrayList<>();
     private Context mContext;
     private Activity mActivity;
     private PlayerDataManager mPlayerDataManager;
@@ -52,6 +54,7 @@ public class PersonFragment extends Fragment {
         View view = inflater.inflate(R.layout.person_fragment, container, false);
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.person_list_recycler_view);
+        plus_person = (ImageView) view.findViewById(R.id.plus_person);
 
         mRecyclerView.setHasFixedSize(true);
         GridLayoutManager mGridLayoutManager =new GridLayoutManager(mContext, 3, LinearLayoutManager.VERTICAL, false);
@@ -60,8 +63,15 @@ public class PersonFragment extends Fragment {
         mAdapter = new PersonListAdapter(mContext, players);
         mRecyclerView.setAdapter(mAdapter);
 
-        return view;
+        plus_person.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PaidDialogFragment paidDialogFragment = new PaidDialogFragment();
+                paidDialogFragment.show(getFragmentManager(), "PaidDialogFragment");
+            }
+        });
 
+        return view;
     }
 
     @Override
