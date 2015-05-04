@@ -6,4 +6,6 @@
     <string name="tab_1">球員清單</string>
     <string name="tab_2">攻守名單</string>
     <string name="tab_3">守備位置</string>
+
+    <string name="cancel">取消</string>
 </resources>

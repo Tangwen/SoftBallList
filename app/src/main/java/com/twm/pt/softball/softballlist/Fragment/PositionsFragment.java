@@ -26,7 +26,7 @@ public class PositionsFragment extends Fragment {
     private PlayerDataManager mPlayerDataManager;
     private SwitchDisplay switch_id = SwitchDisplay.Name;
 
-    private HashMap<String, TextView> PositionViewMap = new HashMap<>();
+    private HashMap<String, TextView> positionViewMap = new HashMap<>();
     private ImageView buttonSwitch;
 
     private static PositionsFragment newFragment;
@@ -107,7 +107,7 @@ public class PositionsFragment extends Fragment {
                     L.d("TODO add BP array");
                 } else {
                     TextView tempView = (TextView) view.findViewById(PositionViewIdArray[no-1]);
-                    PositionViewMap.put(mPosition.getShortName(), tempView);
+                    positionViewMap.put(mPosition.getShortName(), tempView);
                 }
             } catch (Exception e) {
                 L.e(e);
@@ -131,7 +131,7 @@ public class PositionsFragment extends Fragment {
         ArrayList<Player> players = mPlayerDataManager.getOrderPlayers();
         for(Player mPlayer : players) {
             try {
-                TextView tempView = PositionViewMap.get(mPlayer.position.getShortName());
+                TextView tempView = positionViewMap.get(mPlayer.position.getShortName());
                 if(tempView!=null) {
                     tempView.setText(getTextContext(mPlayer));
                 }

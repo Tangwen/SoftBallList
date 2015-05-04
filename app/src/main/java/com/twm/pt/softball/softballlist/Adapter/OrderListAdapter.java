@@ -2,6 +2,7 @@ package com.twm.pt.softball.softballlist.Adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.twm.pt.softball.softballlist.Fragment.PositionsDialogFragment;
 import com.twm.pt.softball.softballlist.Manager.PlayerDataManager;
 import com.twm.pt.softball.softballlist.R;
 import com.twm.pt.softball.softballlist.component.Player;
@@ -22,12 +24,14 @@ import java.util.ArrayList;
 public class OrderListAdapter extends ArrayAdapter<Player> {
     private Context mContext;
     private Activity mActivity;
+    private FragmentManager mFragmentManager ;
     private ArrayList<Player> orderPlayerArrayList;
 
-    public OrderListAdapter(Context mContext, Activity mActivity, ArrayList<Player> playerArrayList) {
+    public OrderListAdapter(Context mContext, Activity mActivity, FragmentManager mFragmentManager, ArrayList<Player> playerArrayList) {
         super(mContext, R.layout.order_row, playerArrayList);
         this.mContext = mContext;
         this.mActivity = mActivity;
+        this.mFragmentManager = mFragmentManager;
         this.orderPlayerArrayList = playerArrayList;
     }
 
@@ -49,6 +53,7 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
             holder.bp_row = (LinearLayout) view.findViewById(R.id.bp_row);
             holder.bp_name = (TextView) view.findViewById(R.id.bp_name);
 
+            holder.positions.setOnClickListener(positionsClick);
 
             view.setTag(holder);
         } else {
@@ -74,18 +79,19 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
         return (view);
     }
 
+    View.OnClickListener positionsClick =  new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            PositionsDialogFragment positionsDialogFragment = new PositionsDialogFragment();
+
+            positionsDialogFragment.show(mFragmentManager, "test");
+        }
+    };
+
 
     public ArrayList<Player> getOrderPlayerArrayList() {
         return orderPlayerArrayList;
     }
-
-//    public void setOrderPlayerArrayList(ArrayList<Player> orderPlayerArrayList) {
-//        clear();
-//        for(Player player:orderPlayerArrayList) {
-//            add(player);
-//        }
-//        this.orderPlayerArrayList = orderPlayerArrayList;
-//    }
 
     private class ViewHolder {
         LinearLayout order_row;

@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ public class OrderFragment extends Fragment {
 
     private Context mContext;
     private Activity mActivity;
+    private FragmentManager mFragmentManager;
     private PlayerDataManager mPlayerDataManager;
     private TouchListView mTouchListView;
 
@@ -41,6 +43,7 @@ public class OrderFragment extends Fragment {
         super.onCreate(savedInstanceState);
         L.d("TestFragment-----onCreate");
         mContext = getActivity().getBaseContext();
+        mFragmentManager = getFragmentManager();
         mPlayerDataManager = PlayerDataManager.getInstance(mContext);
         mPlayerDataManager.setAllPlayersOnChangeListener(allPlayersOnChangeListener);
         mPlayerDataManager.setOrderPlayersOnChangeListener(orderPlayersOnChangeListener);
@@ -52,7 +55,7 @@ public class OrderFragment extends Fragment {
         View view = inflater.inflate(R.layout.order_fragment, container, false);
 
         mTouchListView = (TouchListView) view.findViewById(R.id.order_list);
-        mOrderListAdapter = new OrderListAdapter(mContext, mActivity, mPlayerDataManager.getOrderPlayers());
+        mOrderListAdapter = new OrderListAdapter(mContext, mActivity, mFragmentManager, mPlayerDataManager.getOrderPlayers());
         mTouchListView.setAdapter(mOrderListAdapter);
         mTouchListView.setDropListener(onDrop);
         mTouchListView.setRemoveListener(onRemove);
@@ -122,7 +125,7 @@ public class OrderFragment extends Fragment {
         public void onChange(ArrayList<Player> players) {
             //mOrderListAdapter.setOrderPlayerArrayList(mPlayerDataManager.getOrderPlayers());
             //mOrderListAdapter.notifyDataSetChanged();
-            mOrderListAdapter = new OrderListAdapter(mContext, mActivity, mPlayerDataManager.getOrderPlayers());
+            mOrderListAdapter = new OrderListAdapter(mContext, mActivity, mFragmentManager, mPlayerDataManager.getOrderPlayers());
             mTouchListView.setAdapter(mOrderListAdapter);
         }
     };
