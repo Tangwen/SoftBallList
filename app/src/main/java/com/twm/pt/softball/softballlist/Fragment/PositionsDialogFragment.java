@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.twm.pt.softball.softballlist.R;
 import com.twm.pt.softball.softballlist.component.Player;
@@ -68,6 +69,9 @@ public class PositionsDialogFragment extends DialogFragment {
                 dismiss();
             }
         });
+
+        TextView assign_name = (TextView) view.findViewById(R.id.assign_name);
+        assign_name.setText("指派 " + mPlayer.Name + " 守備位置");
     }
 
     View.OnClickListener positionOnClickListener = new View.OnClickListener() {
