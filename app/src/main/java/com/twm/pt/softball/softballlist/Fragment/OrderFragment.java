@@ -114,7 +114,7 @@ public class OrderFragment extends Fragment {
         @Override
         public void drop(int from, int to) {
             Player item = mOrderListAdapter.getItem(from);
-            L.d(item.toString());
+            //L.d(item.toString());
             item.order_id = to;
             mOrderListAdapter.remove(item);
             mOrderListAdapter.insert(item, to);
