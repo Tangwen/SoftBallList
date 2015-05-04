@@ -1,9 +1,14 @@
 package com.twm.pt.softball.softballlist.component;
 
+import java.io.Serializable;
+
 /**
  * Created by TangWen on 2015/4/22.
  */
-public class Player {
+public class Player implements Serializable {
+    private static final long serialVersionUID = -7060210544600464481L;
+    public static final String BundleKey = "Player";
+
     /**人名*/
     public String Name;
     /**暱稱*/

@@ -61,8 +61,8 @@ public class PositionsFragment extends Fragment {
     public void onStart() {
     	L.d("TestFragment-----onStart");
     	super.onStart();
-        setPositionView();
         setSwitchView();
+        setPositionView();
     }
     
     @Override
@@ -128,6 +128,16 @@ public class PositionsFragment extends Fragment {
     }
 
     private void setPositionView() {
+        for (Position mPosition : Position.values()) {
+            try {
+                TextView tempView = positionViewMap.get(mPosition.getShortName());
+                if(tempView!=null) {
+                    tempView.setText(mPosition.getShortName());
+                }
+            } catch (Exception e) {
+                L.e(e);
+            }
+        }
         ArrayList<Player> players = mPlayerDataManager.getOrderPlayers();
         for(Player mPlayer : players) {
             try {
@@ -162,14 +172,14 @@ public class PositionsFragment extends Fragment {
     private PlayerDataManager.onPlayerChangeListener allPlayersOnChangeListener = new PlayerDataManager.onPlayerChangeListener() {
         @Override
         public void onChange(ArrayList<Player> players) {
-
+            setPositionView();
         }
     };
 
     private PlayerDataManager.onPlayerChangeListener orderPlayersOnChangeListener = new PlayerDataManager.onPlayerChangeListener() {
         @Override
         public void onChange(ArrayList<Player> players) {
-
+            setPositionView();
         }
     };
 

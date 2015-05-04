@@ -56,6 +56,7 @@ public class OrderFragment extends Fragment {
 
         mTouchListView = (TouchListView) view.findViewById(R.id.order_list);
         mOrderListAdapter = new OrderListAdapter(mContext, mActivity, mFragmentManager, mPlayerDataManager.getOrderPlayers());
+        mOrderListAdapter.setOnDialogResultListener(onDialogResultListener);
         mTouchListView.setAdapter(mOrderListAdapter);
         mTouchListView.setDropListener(onDrop);
         mTouchListView.setRemoveListener(onRemove);
@@ -123,8 +124,6 @@ public class OrderFragment extends Fragment {
     private PlayerDataManager.onPlayerChangeListener allPlayersOnChangeListener = new PlayerDataManager.onPlayerChangeListener() {
         @Override
         public void onChange(ArrayList<Player> players) {
-            //mOrderListAdapter.setOrderPlayerArrayList(mPlayerDataManager.getOrderPlayers());
-            //mOrderListAdapter.notifyDataSetChanged();
             mOrderListAdapter = new OrderListAdapter(mContext, mActivity, mFragmentManager, mPlayerDataManager.getOrderPlayers());
             mTouchListView.setAdapter(mOrderListAdapter);
         }
@@ -134,6 +133,16 @@ public class OrderFragment extends Fragment {
         @Override
         public void onChange(ArrayList<Player> players) {
 
+        }
+    };
+
+    private PositionsDialogFragment.OnDialogResultListener onDialogResultListener = new PositionsDialogFragment.OnDialogResultListener() {
+        @Override
+        public void onChangePosition(Player player) {
+            int change = mOrderListAdapter.getPosition(player);
+            mOrderListAdapter.remove(player);
+            mOrderListAdapter.insert(player, change);
+            mPlayerDataManager.setOrderPlayers(mOrderListAdapter.getOrderPlayerArrayList());
         }
     };
 

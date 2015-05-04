@@ -35,16 +35,16 @@ public enum Position {
         Position obj = null;
         if (valueString != null) {
             for (Position obj1 : Position.values()) {
-                if (obj.getNO().equalsIgnoreCase(valueString)) {
+                if (obj1.getNO().equalsIgnoreCase(valueString)) {
                     obj = obj1;
                     break;
-                } else if (obj.getCName().equalsIgnoreCase(valueString)) {
+                } else if (obj1.getCName().equalsIgnoreCase(valueString)) {
                     obj = obj1;
                     break;
-                } else if (obj.getEnName().equalsIgnoreCase(valueString)) {
+                } else if (obj1.getEnName().equalsIgnoreCase(valueString)) {
                     obj = obj1;
                     break;
-                } else if (obj.getShortName().equalsIgnoreCase(valueString)) {
+                } else if (obj1.getShortName().equalsIgnoreCase(valueString)) {
                     obj = obj1;
                     break;
                 }

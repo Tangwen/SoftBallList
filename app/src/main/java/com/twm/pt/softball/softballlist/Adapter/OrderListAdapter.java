@@ -2,6 +2,7 @@ package com.twm.pt.softball.softballlist.Adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,7 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
     private Activity mActivity;
     private FragmentManager mFragmentManager ;
     private ArrayList<Player> orderPlayerArrayList;
+    private PositionsDialogFragment.OnDialogResultListener onDialogResultListener = null;
 
     public OrderListAdapter(Context mContext, Activity mActivity, FragmentManager mFragmentManager, ArrayList<Player> playerArrayList) {
         super(mContext, R.layout.order_row, playerArrayList);
@@ -69,8 +71,9 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
         } else {
             holder.order_row.setVisibility(View.VISIBLE);
             holder.bp_row.setVisibility(View.GONE);
-            holder.order_id.setText(String.valueOf(position+1));
+            holder.order_id.setText(String.valueOf(position + 1));
             holder.positions.setText(mPlayer.position.getShortName());
+            holder.positions.setTag(mPlayer);
             holder.name.setText(mPlayer.Name);
             holder.number.setText(mPlayer.number);
             mPlayer.order_id = position + 1;
@@ -82,15 +85,27 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
     View.OnClickListener positionsClick =  new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            PositionsDialogFragment positionsDialogFragment = new PositionsDialogFragment();
-
-            positionsDialogFragment.show(mFragmentManager, "test");
+            Player mPlayer = (Player) view.getTag();
+            showDialogFragment(mPlayer);
         }
     };
+
+    private void showDialogFragment(Player mPlayer) {
+        PositionsDialogFragment positionsDialogFragment = new PositionsDialogFragment();
+        Bundle mBundle = new Bundle();
+        mBundle.putSerializable(Player.BundleKey, mPlayer);
+        positionsDialogFragment.setArguments(mBundle);
+        positionsDialogFragment.setOnDialogResultListener(onDialogResultListener);
+        positionsDialogFragment.show(mFragmentManager, "PositionsDialogFragment");
+    }
 
 
     public ArrayList<Player> getOrderPlayerArrayList() {
         return orderPlayerArrayList;
+    }
+
+    public void setOnDialogResultListener(PositionsDialogFragment.OnDialogResultListener listener) {
+        this.onDialogResultListener = listener;
     }
 
     private class ViewHolder {
