@@ -8,6 +8,7 @@ import java.io.Serializable;
 public class Player implements Serializable {
     private static final long serialVersionUID = -7060210544600464481L;
     public static final String BundleKey = "Player";
+    public static final String BundleKey_PositionCount = "PositionCount";
 
     /**人名*/
     public String Name;

@@ -16,6 +16,7 @@ import com.twm.pt.softball.softballlist.Fragment.PositionsDialogFragment;
 import com.twm.pt.softball.softballlist.Manager.PlayerDataManager;
 import com.twm.pt.softball.softballlist.R;
 import com.twm.pt.softball.softballlist.component.Player;
+import com.twm.pt.softball.softballlist.component.Position;
 
 import java.util.ArrayList;
 
@@ -77,9 +78,34 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
             holder.name.setText(mPlayer.Name);
             holder.number.setText(mPlayer.number);
             mPlayer.order_id = position + 1;
+
+            if(getShortNameCount(mPlayer.position.getShortName())>1 && !mPlayer.position.equals(Position.BenchPlayer)) {
+                holder.positions.setBackgroundResource(R.drawable.btn_red);
+            } else {
+                holder.positions.setBackgroundResource(R.drawable.btn_black);
+            }
         }
 
         return (view);
+    }
+
+    private int getShortNameCount(String shortName) {
+        int count = 0;
+        for(Player mPlayer : orderPlayerArrayList) {
+            if(mPlayer.position.getShortName().equals(shortName)) {
+                count++;
+            }
+        }
+        return count;
+    }
+    private int[] getPositionCounArrayList() {
+        int positionCounArrayList[] = new int[Position.values().length];
+        for(Player player : orderPlayerArrayList) {
+            int no = Integer.parseInt(player.position.getNO());
+            int count = positionCounArrayList[no];
+            positionCounArrayList[no] = count + 1;
+        }
+        return positionCounArrayList;
     }
 
     View.OnClickListener positionsClick =  new View.OnClickListener() {
@@ -91,9 +117,11 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
     };
 
     private void showDialogFragment(Player mPlayer) {
+        int[] positionCounArrayList = getPositionCounArrayList();
         PositionsDialogFragment positionsDialogFragment = new PositionsDialogFragment();
         Bundle mBundle = new Bundle();
         mBundle.putSerializable(Player.BundleKey, mPlayer);
+        mBundle.putIntArray(Player.BundleKey_PositionCount, positionCounArrayList);
         positionsDialogFragment.setArguments(mBundle);
         positionsDialogFragment.setOnDialogResultListener(onDialogResultListener);
         positionsDialogFragment.show(mFragmentManager, "PositionsDialogFragment");
