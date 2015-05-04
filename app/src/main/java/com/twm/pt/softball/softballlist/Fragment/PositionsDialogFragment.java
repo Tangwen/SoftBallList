@@ -24,7 +24,7 @@ public class PositionsDialogFragment extends DialogFragment {
 
     private HashMap<String, Button> positionButtonMap = new HashMap<>();
     private Player mPlayer;
-    private int[] positionCounArrayList;
+    private int[] positionCountArrayList;
     private OnDialogResultListener onDialogResultListener;
 
     @Override
@@ -33,7 +33,7 @@ public class PositionsDialogFragment extends DialogFragment {
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         mPlayer = (Player)getArguments().getSerializable(Player.BundleKey);
-        positionCounArrayList = getArguments().getIntArray(Player.BundleKey_PositionCount);
+        positionCountArrayList = getArguments().getIntArray(Player.BundleKey_PositionCount);
 
         View view = inflater.inflate(R.layout.positions_dialog, container);
         initPositionView(view);
@@ -50,8 +50,8 @@ public class PositionsDialogFragment extends DialogFragment {
                 tempButton.setOnClickListener(positionOnClickListener);
                 positionButtonMap.put(mPosition.getShortName(), tempButton);
 
-                if(positionCounArrayList[no]!=1) {
-                    tempButton.setText(mPosition.getShortName() + "(" + positionCounArrayList[no] + ")");
+                if(positionCountArrayList[no]!=1) {
+                    tempButton.setText(mPosition.getShortName() + "(" + positionCountArrayList[no] + ")");
                 } else {
                     tempButton.setText(mPosition.getShortName());
                 }

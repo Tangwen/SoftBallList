@@ -97,18 +97,13 @@ public class PositionsFragment extends Fragment {
 
 
 
-    int PositionViewIdArray[] = {R.id.text_P, R.id.text_C, R.id.text_1B, R.id.text_2B, R.id.text_3B, R.id.text_SS, R.id.text_LF, R.id.text_CF, R.id.text_RF, R.id.text_SF, R.id.text_EP};
+    int PositionViewIdArray[] = {R.id.text_BP, R.id.text_P, R.id.text_C, R.id.text_1B, R.id.text_2B, R.id.text_3B, R.id.text_SS, R.id.text_LF, R.id.text_CF, R.id.text_RF, R.id.text_SF, R.id.text_EP};
     private void initPositionView(View view) {
         for (Position mPosition : Position.values()) {
             try {
                 int no = Integer.parseInt(mPosition.getNO());
-                if(no==0) {
-                    //TODO add BP array
-                    L.d("TODO add BP array");
-                } else {
-                    TextView tempView = (TextView) view.findViewById(PositionViewIdArray[no-1]);
-                    positionViewMap.put(mPosition.getShortName(), tempView);
-                }
+                TextView tempView = (TextView) view.findViewById(PositionViewIdArray[no]);
+                positionViewMap.put(mPosition.getShortName(), tempView);
             } catch (Exception e) {
                 L.e(e);
             }
@@ -127,7 +122,7 @@ public class PositionsFragment extends Fragment {
         });
     }
 
-    private void setPositionView() {
+    private void clearPositionView() {
         for (Position mPosition : Position.values()) {
             try {
                 TextView tempView = positionViewMap.get(mPosition.getShortName());
@@ -138,12 +133,28 @@ public class PositionsFragment extends Fragment {
                 L.e(e);
             }
         }
+    }
+    private void setPositionView() {
+        clearPositionView();
+
         ArrayList<Player> players = mPlayerDataManager.getOrderPlayers();
         for(Player mPlayer : players) {
             try {
-                TextView tempView = positionViewMap.get(mPlayer.position.getShortName());
-                if(tempView!=null) {
-                    tempView.setText(getTextContext(mPlayer));
+                if(mPlayer.number.equals(PlayerDataManager.BP_number)) {
+                } else {
+                    TextView tempView = positionViewMap.get(mPlayer.position.getShortName());
+                    if(tempView!=null) {
+                        String sn = tempView.getText().toString();
+                        if(Position.lookup(sn)!=null) {
+                            tempView.setText(getTextContext(mPlayer));
+                        } else {
+                            if(mPlayer.position.equals(Position.BenchPlayer)) {
+                                tempView.setText(sn+"\t" + getTextContext(mPlayer));
+                            } else {
+                                tempView.setText(sn+"\n" + getTextContext(mPlayer));
+                            }
+                        }
+                    }
                 }
             } catch (Exception e) {
                 L.e(e);

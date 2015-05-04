@@ -9,6 +9,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1">
+        <TextView
+            android:id="@+id/text_BP"
+            style="@style/PositionsText"
+            android:gravity="left"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:textColor="@color/blue"
+            android:text="BP"/>
     </FrameLayout>
     <LinearLayout
         android:layout_width="match_parent"

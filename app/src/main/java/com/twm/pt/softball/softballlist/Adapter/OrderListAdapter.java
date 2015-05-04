@@ -98,14 +98,16 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
         }
         return count;
     }
-    private int[] getPositionCounArrayList() {
-        int positionCounArrayList[] = new int[Position.values().length];
+    private int[] getPositionCountArrayList() {
+        int positionCountArrayList[] = new int[Position.values().length];
         for(Player player : orderPlayerArrayList) {
             int no = Integer.parseInt(player.position.getNO());
-            int count = positionCounArrayList[no];
-            positionCounArrayList[no] = count + 1;
+            int count = positionCountArrayList[no];
+            if(!player.number.equals(PlayerDataManager.BP_number)) {
+                positionCountArrayList[no] = count + 1;
+            }
         }
-        return positionCounArrayList;
+        return positionCountArrayList;
     }
 
     View.OnClickListener positionsClick =  new View.OnClickListener() {
@@ -117,11 +119,11 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
     };
 
     private void showDialogFragment(Player mPlayer) {
-        int[] positionCounArrayList = getPositionCounArrayList();
+        int[] positionCountArrayList = getPositionCountArrayList();
         PositionsDialogFragment positionsDialogFragment = new PositionsDialogFragment();
         Bundle mBundle = new Bundle();
         mBundle.putSerializable(Player.BundleKey, mPlayer);
-        mBundle.putIntArray(Player.BundleKey_PositionCount, positionCounArrayList);
+        mBundle.putIntArray(Player.BundleKey_PositionCount, positionCountArrayList);
         positionsDialogFragment.setArguments(mBundle);
         positionsDialogFragment.setOnDialogResultListener(onDialogResultListener);
         positionsDialogFragment.show(mFragmentManager, "PositionsDialogFragment");
