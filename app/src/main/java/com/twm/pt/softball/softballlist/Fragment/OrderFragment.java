@@ -53,14 +53,7 @@ public class OrderFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         L.d("TestFragment-----onCreateView");
         View view = inflater.inflate(R.layout.order_fragment, container, false);
-
-        mTouchListView = (TouchListView) view.findViewById(R.id.order_list);
-        mOrderListAdapter = new OrderListAdapter(mContext, mActivity, mFragmentManager, mPlayerDataManager.getOrderPlayers());
-        mOrderListAdapter.setOnDialogResultListener(onDialogResultListener);
-        mTouchListView.setAdapter(mOrderListAdapter);
-        mTouchListView.setDropListener(onDrop);
-        mTouchListView.setRemoveListener(onRemove);
-
+        initView(view);
         return view;
     }
 
@@ -102,6 +95,20 @@ public class OrderFragment extends Fragment {
         mActivity = activity;
     }
 
+    private void initView(View view) {
+        mTouchListView = (TouchListView) view.findViewById(R.id.order_list);
+        mTouchListView.setDropListener(onDrop);
+        mTouchListView.setRemoveListener(onRemove);
+        initOrderListAdapter();
+    }
+
+    private void initOrderListAdapter() {
+        mOrderListAdapter = new OrderListAdapter(mContext, mActivity, mFragmentManager, mPlayerDataManager.getOrderPlayers());
+        mOrderListAdapter.setOnDialogResultListener(onDialogResultListener);
+        mTouchListView.setAdapter(mOrderListAdapter);
+    }
+
+
 
     private TouchListView.DropListener onDrop = new TouchListView.DropListener() {
         @Override
@@ -124,8 +131,7 @@ public class OrderFragment extends Fragment {
     private PlayerDataManager.onPlayerChangeListener allPlayersOnChangeListener = new PlayerDataManager.onPlayerChangeListener() {
         @Override
         public void onChange(ArrayList<Player> players) {
-            mOrderListAdapter = new OrderListAdapter(mContext, mActivity, mFragmentManager, mPlayerDataManager.getOrderPlayers());
-            mTouchListView.setAdapter(mOrderListAdapter);
+            initOrderListAdapter();
         }
     };
 
@@ -142,6 +148,7 @@ public class OrderFragment extends Fragment {
             int change = mOrderListAdapter.getPosition(player);
             mOrderListAdapter.remove(player);
             mOrderListAdapter.insert(player, change);
+            L.d("change=" + change + ", Name=" + player.Name);
             mPlayerDataManager.setOrderPlayers(mOrderListAdapter.getOrderPlayerArrayList());
         }
     };

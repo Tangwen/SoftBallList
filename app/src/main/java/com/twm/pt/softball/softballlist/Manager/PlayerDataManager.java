@@ -55,6 +55,7 @@ public class PlayerDataManager {
 
         if(players.size()==0) {
             L.d("players.size()==0");
+            players = new ArrayList<Player>();
             players.add(new Player("陽岱鋼", "YOH桑", "images1.jpg", "1", "R/R", Player.Fielder.outfielder, Position.LeftFielder));
             players.add(new Player("林益全", "第一神全", "images9.jpg", "9", "R/L", Player.Fielder.infielder, Position.ThirdBaseMan));
             players.add(new Player("彭政閔", "恰恰", "images23.jpg", "23", "R/R", Player.Fielder.infielder, Position.FirstBaseMan));
@@ -79,8 +80,10 @@ public class PlayerDataManager {
             player.setPresent(false);
             players.add(player);
 
-            player = new Player("預備球員", "預備BAR", "", BP_number, "A/A", Player.Fielder.all_fielder, Position.BenchPlayer);
-            player.setPresent(false);
+            player = new Player("預備球員(BP)", "預備BAR", "", BP_number, "A/A", Player.Fielder.all_fielder, Position.BenchPlayer);
+            player.setPresent(true);
+            players.add(player);
+
             SavePlayer();
         }
     }

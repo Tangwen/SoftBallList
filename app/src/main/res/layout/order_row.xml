@@ -82,7 +82,7 @@
                 android:textColor="@color/green"
                 android:textStyle="bold"
                 android:textSize="20sp"
-                android:text="-------↓"
+                android:text="-----↓"
                 />
             <TextView android:id="@+id/bp_name"
                 android:layout_width="wrap_content"
@@ -101,7 +101,7 @@
                 android:textColor="@color/green"
                 android:textStyle="bold"
                 android:textSize="20sp"
-                android:text="↓-------"
+                android:text="↓-----"
                 />
         </LinearLayout>
     </FrameLayout>
