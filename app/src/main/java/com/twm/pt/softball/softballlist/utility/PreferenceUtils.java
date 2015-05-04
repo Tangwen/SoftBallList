@@ -141,7 +141,7 @@ public class PreferenceUtils {
                     Log.e(TAG, e.getMessage());
                 }
             } else {
-                // FIXME is not simple type,not write
+                // fix me is not simple type,not write
             }
         }
 
@@ -197,7 +197,7 @@ public class PreferenceUtils {
                     Log.e(TAG, e.getMessage());
                 }
             } else {
-                // FIXME is not simple type,not write
+                // fix me is not simple type,not write
             }
         }
 
