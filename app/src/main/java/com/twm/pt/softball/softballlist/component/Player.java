@@ -49,6 +49,20 @@ public class Player implements Serializable {
         this.position = position;
     }
 
+    @Override
+    public String toString() {
+        return "Player{" +
+                "Name='" + Name + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", picture='" + picture + '\'' +
+                ", number='" + number + '\'' +
+                ", habits='" + habits + '\'' +
+                ", fielder=" + fielder +
+                ", present=" + present +
+                ", position=" + position +
+                ", order_id=" + order_id +
+                '}';
+    }
 
     public boolean isPresent() {
         return present;

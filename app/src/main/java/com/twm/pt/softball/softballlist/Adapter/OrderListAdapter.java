@@ -69,10 +69,15 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
             holder.order_row.setVisibility(View.GONE);
             holder.bp_row.setVisibility(View.VISIBLE);
             holder.bp_name.setText(mPlayer.Name);
+            mPlayer.order_id = position + 1;
         } else {
             holder.order_row.setVisibility(View.VISIBLE);
             holder.bp_row.setVisibility(View.GONE);
-            holder.order_id.setText(String.valueOf(position + 1));
+            if(position + 1 > findOrderid(PlayerDataManager.BP_number)) {
+                holder.order_id.setText(String.valueOf(position));
+            } else {
+                holder.order_id.setText(String.valueOf(position + 1));
+            }
             holder.positions.setText(mPlayer.position.getShortName());
             holder.positions.setTag(mPlayer);
             holder.name.setText(mPlayer.Name);
@@ -108,6 +113,15 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
             }
         }
         return positionCountArrayList;
+    }
+
+    private int findOrderid(String number) {
+        for(Player player : orderPlayerArrayList) {
+            if(player.number.equals(number)) {
+                return player.order_id;
+            }
+        }
+        return 99;
     }
 
     View.OnClickListener positionsClick =  new View.OnClickListener() {
