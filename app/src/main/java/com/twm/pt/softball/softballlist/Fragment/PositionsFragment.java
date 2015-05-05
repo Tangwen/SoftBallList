@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -102,8 +103,9 @@ public class PositionsFragment extends Fragment {
         for (Position mPosition : Position.values()) {
             try {
                 int no = Integer.parseInt(mPosition.getNO());
-                TextView tempView = getView(view, PositionViewIdArray[no]);
-                positionViewMap.put(mPosition.getShortName(), tempView);
+                TextView positionView = getView(view, PositionViewIdArray[no]);
+                positionView.setOnTouchListener(positionViewOnTouchListener);
+                positionViewMap.put(mPosition.getShortName(), positionView);
             } catch (Exception e) {
                 L.e(e);
             }
@@ -194,6 +196,41 @@ public class PositionsFragment extends Fragment {
         }
     };
 
+    private View.OnTouchListener positionViewOnTouchListener =  new View.OnTouchListener() {
+        int[] temp = new int[] { 0, 0 };
+
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            int eventAction = motionEvent.getAction();
+
+            int x = (int) motionEvent.getRawX();
+            int y = (int) motionEvent.getRawY();
+            int p = (int) motionEvent.getX();
+            int q = (int) motionEvent.getY();
+            L.d("eventAction="+ eventAction + ", x="+x+", y="+y+", p="+p+", q="+q);
+
+            switch (eventAction) {
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    break;
+                case MotionEvent.ACTION_DOWN:
+                    temp[0] = (int) motionEvent.getX();
+                    temp[1] = y - view.getTop();
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    int l = x - temp[0];
+                    int t = y - temp[1];
+                    int r = x + view.getWidth() - temp[0];
+                    int b = y - temp[1] + view.getHeight();
+
+                    view.layout(l, t, r,b);
+                    view.postInvalidate();
+                    break;
+            }
+            return true;
+        }
+
+    };
 
 
     enum SwitchDisplay {
