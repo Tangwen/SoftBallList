@@ -2,6 +2,7 @@ package com.twm.pt.softball.softballlist.Adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -30,6 +32,8 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
     private FragmentManager mFragmentManager ;
     private ArrayList<Player> orderPlayerArrayList;
     private PositionsDialogFragment.OnDialogResultListener onDialogResultListener = null;
+    private int playPos = 0;
+    private TypedArray emotion_icons;
 
     public OrderListAdapter(Context mContext, Activity mActivity, FragmentManager mFragmentManager, ArrayList<Player> playerArrayList) {
         super(mContext, R.layout.order_row, playerArrayList);
@@ -37,6 +41,7 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
         this.mActivity = mActivity;
         this.mFragmentManager = mFragmentManager;
         this.orderPlayerArrayList = playerArrayList;
+        this.emotion_icons = mContext.getResources().obtainTypedArray(R.array.emotion_icons);
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -53,12 +58,15 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
             holder.positions = getView(view, R.id.person_positions);
             holder.name = getView(view, R.id.person_name);
             holder.number = getView(view, R.id.person_number);
+            holder.bat = getView(view, R.id.person_bat);
             holder.average = getView(view, R.id.person_average);
             holder.bp_row = getView(view, R.id.bp_row);
             holder.bp_name = getView(view, R.id.bp_name);
 
             holder.positions.setOnClickListener(positionsClick);
             holder.average.setOnClickListener(averageClick);
+            holder.name.setOnClickListener(batPosClick);
+            holder.bat.setOnClickListener(batPosClick);
 
             view.setTag(holder);
         } else {
@@ -83,9 +91,20 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
             holder.positions.setText(mPlayer.position.getShortName());
             holder.positions.setTag(mPlayer);
             holder.name.setText(mPlayer.Name);
+            holder.name.setTag(position);
+            holder.bat.setTag(position);
             holder.number.setText(mPlayer.number);
             mPlayer.order_id = position + 1;
 
+            if(position==playPos) {
+                holder.name.setTextColor(mContext.getResources().getColor(R.color.blue));
+                int time = (int)System.currentTimeMillis();
+                holder.bat.setImageDrawable(emotion_icons.getDrawable(time%emotion_icons.length()));
+                holder.bat.setVisibility(View.VISIBLE);
+            } else {
+                holder.name.setTextColor(mContext.getResources().getColor(R.color.yellow));
+                holder.bat.setVisibility(View.INVISIBLE);
+            }
             if(getShortNameCount(mPlayer.position.getShortName())>1 && !mPlayer.position.equals(Position.BenchPlayer)) {
                 holder.positions.setBackgroundResource(R.drawable.btn_red);
             } else {
@@ -141,6 +160,13 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
         }
     };
 
+    View.OnClickListener batPosClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            changePlayPos(view);
+        }
+    };
+
     private void showPositionDialogFragment(Player mPlayer) {
         int[] positionCountArrayList = getPositionCountArrayList();
         PositionsDialogFragment positionsDialogFragment = new PositionsDialogFragment();
@@ -157,6 +183,13 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
         paidDialogFragment.show(mFragmentManager, "PaidDialogFragment");
     }
 
+    private void changePlayPos(View view) {
+        playPos = (int) view.getTag();
+        notifyDataSetChanged();
+    }
+
+
+
     public ArrayList<Player> getOrderPlayerArrayList() {
         return orderPlayerArrayList;
     }
@@ -171,6 +204,7 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
         Button positions;
         TextView name;
         TextView number;
+        ImageView bat;
         TextView average;
         LinearLayout bp_row;
         TextView bp_name;

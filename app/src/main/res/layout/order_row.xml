@@ -52,12 +52,19 @@
                 />
             <TextView
                 android:id="@+id/person_number"
-                android:layout_width="wrap_content"
+                android:layout_width="20dp"
                 android:layout_height="wrap_content"
                 android:gravity="left"
                 android:minEms="2"
                 android:textColor="@color/green"
                 />
+            <ImageView
+                android:id="@+id/person_bat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                android:layout_gravity="center_vertical"
+                android:src="@mipmap/emotion_25"/>
             <TextView
                 android:id="@+id/person_average"
                 android:layout_width="wrap_content"

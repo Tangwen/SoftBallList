@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="emotion_icons">
+        <item>@mipmap/emotion_1</item>
+        <item>@mipmap/emotion_10</item>
+        <item>@mipmap/emotion_17</item>
+        <item>@mipmap/emotion_2</item>
+        <item>@mipmap/emotion_25</item>
+        <item>@mipmap/emotion_29</item>
+        <item>@mipmap/emotion_35</item>
+    </array>
+</resources>
