@@ -26,6 +26,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
     private Context mContext;
     private String picPath;
     private ArrayList<View.OnClickListener> mListener = new ArrayList<View.OnClickListener> ();
+    private ArrayList<View.OnClickListener> mPresentListener = new ArrayList<View.OnClickListener> ();
     private int setFullSpanPosition = -1;
 
     // Provide a reference to the views for each data item
@@ -52,7 +53,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
             person_habits = getView(itemLayoutView, R.id.person_habits);
             person_fielder = getView(itemLayoutView, R.id.person_fielder);
             person_present = getView(itemLayoutView, R.id.person_present);
-            person_present.setOnClickListener(onClickListener);
+            person_present.setOnClickListener(onPresentClickListener);
         }
 
         @Override
@@ -69,11 +70,14 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
             }
         }
 
-        View.OnClickListener onClickListener = new View.OnClickListener() {
+        View.OnClickListener onPresentClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 playerArrayList.get(getLayoutPosition()).present = ((CheckBox)view).isChecked();
                 PlayerDataManager.getInstance(mContext).setAllPlayers(playerArrayList);
+                for (View.OnClickListener listener: mPresentListener) {
+                    listener.onClick(view);
+                }
             }
         };
     }
@@ -125,6 +129,12 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
     }
     public void removeOnClickListener(View.OnClickListener mListener) {
         this.mListener.remove(mListener);
+    }
+    public void setPresentOnClickListener(View.OnClickListener mPresentListener) {
+        this.mPresentListener.add(mPresentListener);
+    }
+    public void removePresentOnClickListener(View.OnClickListener mPresentListener) {
+        this.mPresentListener.remove(mPresentListener);
     }
 
     public void setPlayerArrayList(ArrayList<Player> playerArrayList) {

@@ -11,7 +11,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.twm.pt.softball.softballlist.Adapter.PersonListAdapter;
 import com.twm.pt.softball.softballlist.Manager.PlayerDataManager;
@@ -25,10 +29,14 @@ public class PersonFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private PersonListAdapter mAdapter;
     private ImageView plus_person;
+    private ImageView present_plus_image;
+    private TextView present_text_count1;
+    private TextView present_text_count2;
     private ArrayList<Player> players = new ArrayList<>();
     private Context mContext;
     private Activity mActivity;
     private PlayerDataManager mPlayerDataManager;
+    private int presentCount = 0;
 
     private static PersonFragment newFragment;
     public static PersonFragment newInstance() {
@@ -55,13 +63,21 @@ public class PersonFragment extends Fragment {
 
         mRecyclerView = getView(view, R.id.person_list_recycler_view);
         plus_person = getView(view, R.id.plus_person);
+        present_plus_image = getView(view, R.id.present_plus_image);
+        present_text_count1 = getView(view, R.id.present_text_count1);
+        present_text_count2 = getView(view, R.id.present_text_count2);
 
         mRecyclerView.setHasFixedSize(true);
         GridLayoutManager mGridLayoutManager =new GridLayoutManager(mContext, 3, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(mGridLayoutManager);
         players = mPlayerDataManager.getAllPlayers();
         mAdapter = new PersonListAdapter(mContext, players);
+        mAdapter.setPresentOnClickListener(onPresentClickListener);
         mRecyclerView.setAdapter(mAdapter);
+        ArrayList<Player> orderPlayer = mPlayerDataManager.getOrderPlayers();
+        presentCount = orderPlayer.size()-1;
+        present_text_count1.setText(String.valueOf(presentCount));
+        present_text_count2.setText(String.valueOf(presentCount));
 
         plus_person.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,7 +86,6 @@ public class PersonFragment extends Fragment {
                 paidDialogFragment.show(getFragmentManager(), "PaidDialogFragment");
             }
         });
-
         return view;
     }
 
@@ -116,6 +131,80 @@ public class PersonFragment extends Fragment {
         mAdapter.setPlayerArrayList(players);
         mAdapter.notifyDataSetChanged();
     }
+
+    private void plusPresentCount() {
+        try {
+            Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.rotate);
+            Animation animationDown1 = AnimationUtils.loadAnimation(mContext, R.anim.translate_down1);
+            Animation animationDown2 = AnimationUtils.loadAnimation(mContext, R.anim.translate_down2);
+            presentCount++;
+            present_text_count2.setText(String.valueOf(presentCount));
+            present_text_count2.setVisibility(View.VISIBLE);
+            present_plus_image.startAnimation(animation);
+            present_text_count1.startAnimation(animationDown2);
+            present_text_count2.startAnimation(animationDown1);
+
+            animationDown2.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    present_text_count1.setText(String.valueOf(presentCount));
+                }
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void minusPresentCount() {
+        try {
+            Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.rotate_r);
+            Animation animationUp1 = AnimationUtils.loadAnimation(mContext, R.anim.translate_up1);
+            Animation animationUp2 = AnimationUtils.loadAnimation(mContext, R.anim.translate_up2);
+            presentCount--;
+            present_text_count2.setText(String.valueOf(presentCount));
+            present_text_count2.setVisibility(View.VISIBLE);
+            present_plus_image.startAnimation(animation);
+            present_text_count1.startAnimation(animationUp1);
+            present_text_count2.startAnimation(animationUp2);
+
+            animationUp1.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    present_text_count1.setText(String.valueOf(presentCount));
+                }
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    View.OnClickListener onPresentClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if(((CheckBox)view).isChecked()) {
+                plusPresentCount();
+            } else {
+                minusPresentCount();
+            }
+        }
+    };
 
     private PlayerDataManager.onPlayerChangeListener allPlayersOnChangeListener = new PlayerDataManager.onPlayerChangeListener() {
         @Override
