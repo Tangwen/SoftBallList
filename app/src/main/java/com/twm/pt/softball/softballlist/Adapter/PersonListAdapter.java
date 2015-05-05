@@ -45,13 +45,13 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
         public ViewHolder(View itemLayoutView) {
             super(itemLayoutView);
             itemLayoutView.setOnClickListener(this);
-            mImageView = (ImageView) itemLayoutView.findViewById(R.id.person_picture);
-            person_name = (TextView) itemLayoutView.findViewById(R.id.person_name);
-            person_nickName = (TextView) itemLayoutView.findViewById(R.id.person_nickName);
-            person_number = (TextView) itemLayoutView.findViewById(R.id.person_number);
-            person_habits = (TextView) itemLayoutView.findViewById(R.id.person_habits);
-            person_fielder = (TextView) itemLayoutView.findViewById(R.id.person_fielder);
-            person_present = (CheckBox) itemLayoutView.findViewById(R.id.person_present);
+            mImageView =getView(itemLayoutView, R.id.person_picture);
+            person_name = getView(itemLayoutView, R.id.person_name);
+            person_nickName = getView(itemLayoutView, R.id.person_nickName);
+            person_number = getView(itemLayoutView, R.id.person_number);
+            person_habits = getView(itemLayoutView, R.id.person_habits);
+            person_fielder = getView(itemLayoutView, R.id.person_fielder);
+            person_present = getView(itemLayoutView, R.id.person_present);
             person_present.setOnClickListener(onClickListener);
         }
 
@@ -134,5 +134,10 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
     public Player getItem(int pos) {
         if(pos>= playerArrayList.size()) return null;
         return playerArrayList.get(pos);
+    }
+
+    public final <E extends View> E
+    getView(View view, int id) {
+        return (E) view.findViewById(id);
     }
 }

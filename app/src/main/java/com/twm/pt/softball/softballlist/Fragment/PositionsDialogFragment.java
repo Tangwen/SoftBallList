@@ -46,7 +46,7 @@ public class PositionsDialogFragment extends DialogFragment {
         for (Position mPosition : Position.values()) {
             try {
                 int no = Integer.parseInt(mPosition.getNO());
-                Button tempButton = (Button) view.findViewById(PositionViewIdArray[no]);
+                Button tempButton = getView(view, PositionViewIdArray[no]);
                 tempButton.setTag(no);
                 tempButton.setOnClickListener(positionOnClickListener);
                 positionButtonMap.put(mPosition.getShortName(), tempButton);
@@ -62,7 +62,7 @@ public class PositionsDialogFragment extends DialogFragment {
             }
         }
 
-        Button close_button = (Button) view.findViewById(R.id.close_button);
+        Button close_button = getView(view, R.id.close_button);
         close_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -70,7 +70,7 @@ public class PositionsDialogFragment extends DialogFragment {
             }
         });
 
-        TextView assign_name = (TextView) view.findViewById(R.id.assign_name);
+        TextView assign_name = getView(view, R.id.assign_name);
         assign_name.setText("指派 " + mPlayer.Name + " 守備位置");
     }
 
@@ -94,5 +94,10 @@ public class PositionsDialogFragment extends DialogFragment {
 
     public interface OnDialogResultListener {
         public abstract void onChangePosition(Player player);
+    }
+
+    public final <E extends View> E
+    getView(View view, int id) {
+        return (E) view.findViewById(id);
     }
 }

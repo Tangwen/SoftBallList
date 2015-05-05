@@ -90,7 +90,7 @@ public class MainActivity extends ActionBarActivity {
 
 
     private void InitWidth() {
-        ivBottomLine = (ImageView) findViewById(R.id.iv_bottom_line);
+        ivBottomLine = getView(R.id.iv_bottom_line);
         bottomLineWidth = ivBottomLine.getLayoutParams().width;
         L.d("cursor imageview width=" + bottomLineWidth);
         DisplayMetrics dm = new DisplayMetrics();
@@ -105,9 +105,9 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void InitTextView() {
-        tvTabPerson = (TextView) findViewById(R.id.tv_tab_person);
-        tvTabOrder = (TextView) findViewById(R.id.tv_tab_order);
-        tvTabPositions = (TextView) findViewById(R.id.tv_tab_positions);
+        tvTabPerson = getView(R.id.tv_tab_person);
+        tvTabOrder = getView(R.id.tv_tab_order);
+        tvTabPositions = getView(R.id.tv_tab_positions);
 
         tvTabPerson.setOnClickListener(new MyOnClickListener(0));
         tvTabOrder.setOnClickListener(new MyOnClickListener(1));
@@ -129,7 +129,7 @@ public class MainActivity extends ActionBarActivity {
 
 
     private void InitViewPager() {
-        mPager = (ViewPager) findViewById(R.id.vPager);
+        mPager = getView(R.id.vPager);
         fragmentsList = new ArrayList<>();
 
         Fragment personFragment = PersonFragment.newInstance();
@@ -197,5 +197,10 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public void onPageScrollStateChanged(int arg0) {
         }
+    }
+
+    public final <E extends View> E
+    getView(int id) {
+        return (E) findViewById(id);
     }
 }

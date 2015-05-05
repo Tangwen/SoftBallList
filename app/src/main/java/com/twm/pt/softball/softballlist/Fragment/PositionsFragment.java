@@ -102,7 +102,7 @@ public class PositionsFragment extends Fragment {
         for (Position mPosition : Position.values()) {
             try {
                 int no = Integer.parseInt(mPosition.getNO());
-                TextView tempView = (TextView) view.findViewById(PositionViewIdArray[no]);
+                TextView tempView = getView(view, PositionViewIdArray[no]);
                 positionViewMap.put(mPosition.getShortName(), tempView);
             } catch (Exception e) {
                 L.e(e);
@@ -111,7 +111,7 @@ public class PositionsFragment extends Fragment {
     }
 
     private void initSwitchView(View view) {
-        buttonSwitch =  (ImageView) view.findViewById(R.id.button_switch);
+        buttonSwitch =  getView(view, R.id.button_switch);
         buttonSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -229,5 +229,10 @@ public class PositionsFragment extends Fragment {
             }
             return Name;
         }
+    }
+
+    public final <E extends View> E
+    getView(View view, int id) {
+        return (E) view.findViewById(id);
     }
 }

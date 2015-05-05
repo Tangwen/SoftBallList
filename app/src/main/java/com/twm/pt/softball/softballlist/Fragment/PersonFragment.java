@@ -53,8 +53,8 @@ public class PersonFragment extends Fragment {
         L.d( "TestFragment-----onCreateView");
         View view = inflater.inflate(R.layout.person_fragment, container, false);
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.person_list_recycler_view);
-        plus_person = (ImageView) view.findViewById(R.id.plus_person);
+        mRecyclerView = getView(view, R.id.person_list_recycler_view);
+        plus_person = getView(view, R.id.plus_person);
 
         mRecyclerView.setHasFixedSize(true);
         GridLayoutManager mGridLayoutManager =new GridLayoutManager(mContext, 3, LinearLayoutManager.VERTICAL, false);
@@ -131,4 +131,9 @@ public class PersonFragment extends Fragment {
 
         }
     };
+
+    public final <E extends View> E
+    getView(View view, int id) {
+        return (E) view.findViewById(id);
+    }
 }

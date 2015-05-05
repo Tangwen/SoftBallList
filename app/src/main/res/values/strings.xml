@@ -8,6 +8,6 @@
     <string name="tab_3">守備位置</string>
 
     <string name="cancel">取消</string>
-    <string name="paid_text">請購買付費版本，謝謝您！</string>
+    <string name="paid_text">此功能免費版本未提供，\n請購買付費版本，謝謝您！</string>
 
 </resources>

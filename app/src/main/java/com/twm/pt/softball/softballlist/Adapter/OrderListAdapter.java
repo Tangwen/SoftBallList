@@ -48,14 +48,14 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
 
             holder = new ViewHolder();
 
-            holder.order_row = (LinearLayout) view.findViewById(R.id.order_row);
-            holder.order_id = (TextView) view.findViewById(R.id.order_id);
-            holder.positions = (Button) view.findViewById(R.id.person_positions);
-            holder.name = (TextView) view.findViewById(R.id.person_name);
-            holder.number = (TextView) view.findViewById(R.id.person_number);
-            holder.average = (TextView) view.findViewById(R.id.person_average);
-            holder.bp_row = (LinearLayout) view.findViewById(R.id.bp_row);
-            holder.bp_name = (TextView) view.findViewById(R.id.bp_name);
+            holder.order_row = getView(view, R.id.order_row);
+            holder.order_id = getView(view, R.id.order_id);
+            holder.positions = getView(view, R.id.person_positions);
+            holder.name = getView(view, R.id.person_name);
+            holder.number = getView(view, R.id.person_number);
+            holder.average = getView(view, R.id.person_average);
+            holder.bp_row = getView(view, R.id.bp_row);
+            holder.bp_name = getView(view, R.id.bp_name);
 
             holder.positions.setOnClickListener(positionsClick);
             holder.average.setOnClickListener(averageClick);
@@ -175,4 +175,9 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
         LinearLayout bp_row;
         TextView bp_name;
     };
+
+    public final <E extends View> E
+    getView(View view, int id) {
+        return (E) view.findViewById(id);
+    }
 }

@@ -96,7 +96,7 @@ public class OrderFragment extends Fragment {
     }
 
     private void initView(View view) {
-        mTouchListView = (TouchListView) view.findViewById(R.id.order_list);
+        mTouchListView = getView(view, R.id.order_list);
         mTouchListView.setDropListener(onDrop);
         mTouchListView.setRemoveListener(onRemove);
         initOrderListAdapter();
@@ -155,4 +155,8 @@ public class OrderFragment extends Fragment {
         }
     };
 
+    public final <E extends View> E
+    getView(View view, int id) {
+        return (E) view.findViewById(id);
+    }
 }
