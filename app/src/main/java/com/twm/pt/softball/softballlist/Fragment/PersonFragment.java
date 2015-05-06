@@ -32,6 +32,7 @@ public class PersonFragment extends Fragment {
     private ImageView present_plus_image;
     private TextView present_text_count1;
     private TextView present_text_count2;
+    private TextView person_text_total;
     private ArrayList<Player> players = new ArrayList<>();
     private Context mContext;
     private Activity mActivity;
@@ -66,6 +67,7 @@ public class PersonFragment extends Fragment {
         present_plus_image = getView(view, R.id.present_plus_image);
         present_text_count1 = getView(view, R.id.present_text_count1);
         present_text_count2 = getView(view, R.id.present_text_count2);
+        person_text_total = getView(view, R.id.person_text_total);
 
         mRecyclerView.setHasFixedSize(true);
         GridLayoutManager mGridLayoutManager =new GridLayoutManager(mContext, 3, LinearLayoutManager.VERTICAL, false);
@@ -78,6 +80,7 @@ public class PersonFragment extends Fragment {
         presentCount = orderPlayer.size()-1;
         present_text_count1.setText(String.valueOf(presentCount));
         present_text_count2.setText(String.valueOf(presentCount));
+        person_text_total.setText("/" + String.valueOf(players.size()));
 
         plus_person.setOnClickListener(new View.OnClickListener() {
             @Override
