@@ -2,6 +2,7 @@ package com.twm.pt.softball.softballlist.Activity;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
@@ -232,6 +233,9 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void showTeamNameDialogFragment() {
+//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//        ft.setCustomAnimations(R.anim.translate_down1, R.anim.translate_down2);
+
         TeamNameDialogFragment mTeamNameDialogFragment = new TeamNameDialogFragment();
         mTeamNameDialogFragment.setTeamName(etTeam_name.getText().toString());
         mTeamNameDialogFragment.setOnDialogResultListener(new TeamNameDialogFragment.OnDialogResultListener() {
@@ -242,6 +246,9 @@ public class MainActivity extends ActionBarActivity {
             }
         });
         mTeamNameDialogFragment.show(getSupportFragmentManager(), "TeamNameDialogFragment");
+
+//        ft.add(mTeamNameDialogFragment, "TeamNameDialogFragment");
+//        ft.show(mTeamNameDialogFragment).commit();
     }
 
     public final <E extends View> E

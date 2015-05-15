@@ -4,9 +4,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.twm.pt.softball.softballlist.R;
@@ -41,6 +43,12 @@ public class TeamNameDialogFragment extends DialogFragment {
                         })
                 .setNegativeButton(R.string.cancel, null);
         return builder.create();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        getDialog().getWindow().setWindowAnimations(R.style.animate_move_dialog);
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     public void setTeamName(String teamName) {

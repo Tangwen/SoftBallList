@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,5 +47,11 @@ public class PaidDialogFragment extends DialogFragment {
 //                    }
 //                })
                 .create();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        getDialog().getWindow().setWindowAnimations(R.style.animate_fade_dialog);
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 }

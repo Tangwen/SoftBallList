@@ -35,4 +35,17 @@
     <style name="CustomCheckboxTheme" parent="@android:style/Widget.CompoundButton.CheckBox">
         <item name="android:button">@drawable/checkbox_style</item>
     </style>
+
+    <style name="animate_move_dialog">
+        <item name="android:windowEnterAnimation">@anim/dialog_enter</item>
+        <item name="android:windowExitAnimation">@anim/dialog_out</item>
+    </style>
+    <style name="animate_rotate_dialog">
+        <item name="android:windowEnterAnimation">@anim/rotate</item>
+        <item name="android:windowExitAnimation">@anim/rotate</item>
+    </style>
+    <style name="animate_fade_dialog">
+        <item name="android:windowEnterAnimation">@anim/fade_in</item>
+        <item name="android:windowExitAnimation">@anim/fade_out</item>
+    </style>
 </resources>
