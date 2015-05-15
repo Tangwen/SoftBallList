@@ -7,6 +7,8 @@
     <string name="tab_2">攻守名單</string>
     <string name="tab_3">守備位置</string>
 
+    <string name="input_team_name">請輸入球隊名稱</string>
+    <string name="ok">確認</string>
     <string name="cancel">取消</string>
     <string name="paid_text">此功能免費版本未提供，\n請購買付費版本，謝謝您！</string>
 

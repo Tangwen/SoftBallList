@@ -1,5 +1,6 @@
 package com.twm.pt.softball.softballlist.Activity;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
@@ -18,11 +19,12 @@ import android.widget.TextView;
 import com.twm.pt.softball.softballlist.Adapter.MyFragmentPagerAdapter;
 import com.twm.pt.softball.softballlist.Fragment.OrderFragment;
 import com.twm.pt.softball.softballlist.Fragment.PersonFragment;
-import com.twm.pt.softball.softballlist.Fragment.PositionsFragment;
 import com.twm.pt.softball.softballlist.Fragment.PositionsFragment2;
+import com.twm.pt.softball.softballlist.Fragment.TeamNameDialogFragment;
 import com.twm.pt.softball.softballlist.Manager.PlayerDataManager;
 import com.twm.pt.softball.softballlist.R;
 import com.twm.pt.softball.softballlist.utility.L;
+import com.twm.pt.softball.softballlist.utility.PreferenceUtils;
 
 import java.util.ArrayList;
 
@@ -34,6 +36,7 @@ public class MainActivity extends ActionBarActivity {
     private ViewPager mPager;
     private ArrayList<Fragment> fragmentsList;
     private TextView tvTabPerson, tvTabOrder, tvTabPositions;
+    private TextView etTeam_name;
 
     //Parmeter
     private int bottomLineWidth;
@@ -43,11 +46,16 @@ public class MainActivity extends ActionBarActivity {
     private int currIndex = 0;
 
     //System Resource
+    private Context mAppContext;
     private Resources resources;
+
+    //Key
+    private static String team_name_key = "team_name";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mAppContext = getApplicationContext();
 
         setContentView(R.layout.activity_main);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -61,6 +69,12 @@ public class MainActivity extends ActionBarActivity {
 //        L.d("ST_Rom_AppDir=" + StorageDirectory.getStorageDirectory(getBaseContext(), StorageDirectory.StorageType.ST_Rom_AppDir));
 //        L.d("ST_Rom_DataDir=" + StorageDirectory.getStorageDirectory(getBaseContext(), StorageDirectory.StorageType.ST_Rom_DataDir));
 //        L.d("ST_SDCard_RootDir=" + StorageDirectory.getStorageDirectory(getBaseContext(), StorageDirectory.StorageType.ST_SDCard_RootDir));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setTeamNameTextView();
     }
 
     @Override
@@ -111,10 +125,25 @@ public class MainActivity extends ActionBarActivity {
         tvTabPerson = getView(R.id.tv_tab_person);
         tvTabOrder = getView(R.id.tv_tab_order);
         tvTabPositions = getView(R.id.tv_tab_positions);
+        etTeam_name = getView(R.id.etTeam_name);
 
         tvTabPerson.setOnClickListener(new MyOnClickListener(0));
         tvTabOrder.setOnClickListener(new MyOnClickListener(1));
         tvTabPositions.setOnClickListener(new MyOnClickListener(2));
+        etTeam_name.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                showTeamNameDialogFragment();
+            }
+        });
+    }
+
+    private void setTeamNameTextView() {
+        String teamName = PreferenceUtils.getValue(mAppContext, team_name_key, resources.getString(R.string.team_name));
+        if(teamName==null || teamName.isEmpty()) {
+            teamName = resources.getString(R.string.team_name);
+        }
+        etTeam_name.setText(teamName);
     }
 
     public class MyOnClickListener implements View.OnClickListener {
@@ -200,6 +229,19 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public void onPageScrollStateChanged(int arg0) {
         }
+    }
+
+    private void showTeamNameDialogFragment() {
+        TeamNameDialogFragment mTeamNameDialogFragment = new TeamNameDialogFragment();
+        mTeamNameDialogFragment.setTeamName(etTeam_name.getText().toString());
+        mTeamNameDialogFragment.setOnDialogResultListener(new TeamNameDialogFragment.OnDialogResultListener() {
+            @Override
+            public void onChangeString(String teamName) {
+                PreferenceUtils.setValue(mAppContext, team_name_key, teamName);
+                setTeamNameTextView();
+            }
+        });
+        mTeamNameDialogFragment.show(getSupportFragmentManager(), "TeamNameDialogFragment");
     }
 
     public final <E extends View> E
