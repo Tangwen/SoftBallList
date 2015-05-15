@@ -208,6 +208,7 @@ public class PositionsFragment extends Fragment {
             int p = (int) motionEvent.getX();
             int q = (int) motionEvent.getY();
             L.d("eventAction="+ eventAction + ", x="+x+", y="+y+", p="+p+", q="+q);
+            L.d("view.getWidth()=" + view.getWidth() + ", view.getHeight()=" + view.getHeight());
 
             switch (eventAction) {
                 case MotionEvent.ACTION_UP:

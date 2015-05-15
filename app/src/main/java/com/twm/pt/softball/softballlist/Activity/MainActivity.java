@@ -19,6 +19,7 @@ import com.twm.pt.softball.softballlist.Adapter.MyFragmentPagerAdapter;
 import com.twm.pt.softball.softballlist.Fragment.OrderFragment;
 import com.twm.pt.softball.softballlist.Fragment.PersonFragment;
 import com.twm.pt.softball.softballlist.Fragment.PositionsFragment;
+import com.twm.pt.softball.softballlist.Fragment.PositionsFragment2;
 import com.twm.pt.softball.softballlist.Manager.PlayerDataManager;
 import com.twm.pt.softball.softballlist.R;
 import com.twm.pt.softball.softballlist.utility.L;
@@ -136,7 +137,7 @@ public class MainActivity extends ActionBarActivity {
 
         Fragment personFragment = PersonFragment.newInstance();
         Fragment orderFragment = OrderFragment.newInstance();
-        Fragment positionsFragment= PositionsFragment.newInstance();
+        Fragment positionsFragment= PositionsFragment2.newInstance();
 
         fragmentsList.add(personFragment);
         fragmentsList.add(orderFragment);

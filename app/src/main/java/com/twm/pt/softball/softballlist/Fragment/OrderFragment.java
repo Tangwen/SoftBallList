@@ -29,6 +29,7 @@ public class OrderFragment extends Fragment {
     private FragmentManager mFragmentManager;
     private PlayerDataManager mPlayerDataManager;
     private TouchListView mTouchListView;
+    private boolean isMove = false;
 
     private static OrderFragment newFragment;
     public static OrderFragment newInstance() {
@@ -103,9 +104,11 @@ public class OrderFragment extends Fragment {
     }
 
     private void initOrderListAdapter() {
+        isMove = true;
         mOrderListAdapter = new OrderListAdapter(mContext, mActivity, mFragmentManager, mPlayerDataManager.getOrderPlayers());
         mOrderListAdapter.setOnDialogResultListener(onDialogResultListener);
         mTouchListView.setAdapter(mOrderListAdapter);
+        isMove = false;
     }
 
 
@@ -119,6 +122,7 @@ public class OrderFragment extends Fragment {
             mOrderListAdapter.remove(item);
             mOrderListAdapter.insert(item, to);
             mPlayerDataManager.setOrderPlayers(mOrderListAdapter.getOrderPlayerArrayList());
+            isMove = true;
         }
     };
 
@@ -127,6 +131,7 @@ public class OrderFragment extends Fragment {
         public void remove(int which) {
             mOrderListAdapter.remove(mOrderListAdapter.getItem(which));
             mPlayerDataManager.setOrderPlayers(mOrderListAdapter.getOrderPlayerArrayList());
+            isMove = true;
         }
     };
 
@@ -140,7 +145,11 @@ public class OrderFragment extends Fragment {
     private PlayerDataManager.onPlayerChangeListener orderPlayersOnChangeListener = new PlayerDataManager.onPlayerChangeListener() {
         @Override
         public void onChange(ArrayList<Player> players) {
-
+            if(isMove) {
+                isMove = false;
+            } else {
+                initOrderListAdapter();
+            }
         }
     };
 
