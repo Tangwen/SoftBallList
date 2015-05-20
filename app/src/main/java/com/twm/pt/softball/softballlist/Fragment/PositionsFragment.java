@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -29,6 +30,8 @@ public class PositionsFragment extends Fragment {
 
     private HashMap<String, TextView> positionViewMap = new HashMap<>();
     private ImageView buttonSwitch;
+
+
 
     private static PositionsFragment newFragment;
     public static PositionsFragment newInstance() {
@@ -217,6 +220,7 @@ public class PositionsFragment extends Fragment {
                 case MotionEvent.ACTION_DOWN:
                     temp[0] = (int) motionEvent.getX();
                     temp[1] = y - view.getTop();
+
                     break;
                 case MotionEvent.ACTION_MOVE:
                     int l = x - temp[0];
@@ -224,14 +228,17 @@ public class PositionsFragment extends Fragment {
                     int r = x + view.getWidth() - temp[0];
                     int b = y - temp[1] + view.getHeight();
 
-                    view.layout(l, t, r,b);
+                    view.layout(l, t, r, b);
                     view.postInvalidate();
+
                     break;
             }
             return true;
         }
 
     };
+
+
 
 
     enum SwitchDisplay {

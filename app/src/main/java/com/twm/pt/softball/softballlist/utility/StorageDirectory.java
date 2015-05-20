@@ -60,11 +60,13 @@ public class StorageDirectory {
                 //如果沒有DCIM目錄, 就放到sd卡
                 f = Environment.getExternalStorageDirectory();
             }
-            path = f.getPath() + "/" + "picture";
+            path = f.getPath() + "/" + "Pictures";
         }
 
         return path;
     }
+
+
 
     /**
      * 檢查sdk許可權，檢查預設照片存儲路徑是否存在，不在則創建
@@ -72,13 +74,43 @@ public class StorageDirectory {
      * @return
      */
     public static boolean checkPath(Context mContext) {
-        String path = getPath(mContext);
-        File file = new File(path);
-        if (!file.exists()) {
-            file.mkdir();
+        try {
+            if(mContext==null) return false;
+            String path = getPath(mContext);
+            return checkPath(path);
+        } catch (Exception e) {
         }
-        if (path.lastIndexOf("picture") != -1) {
+        return false;
+    }
+
+
+    /**
+     * 檢查sdk許可權，檢查預設照片存儲路徑是否存在，不在則創建
+     * @param path
+     * @return
+     */
+    public static boolean checkPath(String path) {
+        try {
+            if(path==null) return false;
+            File file = new File(path);
+            return checkPath(file);
+        } catch (Exception e) {
+        }
+        return false;
+    }
+
+    /**
+     * 檢查sdk許可權，檢查預設照片存儲路徑是否存在，不在則創建
+     * @param file
+     * @return
+     */
+    public static boolean checkPath(File file) {
+        try {
+            if (file!=null && !file.exists()) {
+                file.mkdir();
+            }
             return true;
+        } catch (Exception e) {
         }
         return false;
     }

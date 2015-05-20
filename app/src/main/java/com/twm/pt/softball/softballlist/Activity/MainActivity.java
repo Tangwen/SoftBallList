@@ -1,8 +1,13 @@
 package com.twm.pt.softball.softballlist.Activity;
 
+import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
-import android.support.v4.app.FragmentTransaction;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.net.Uri;
+import android.os.Vibrator;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
@@ -26,7 +31,11 @@ import com.twm.pt.softball.softballlist.Manager.PlayerDataManager;
 import com.twm.pt.softball.softballlist.R;
 import com.twm.pt.softball.softballlist.utility.L;
 import com.twm.pt.softball.softballlist.utility.PreferenceUtils;
+import com.twm.pt.softball.softballlist.utility.StorageDirectory;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 
 
@@ -131,6 +140,11 @@ public class MainActivity extends ActionBarActivity {
         tvTabPerson.setOnClickListener(new MyOnClickListener(0));
         tvTabOrder.setOnClickListener(new MyOnClickListener(1));
         tvTabPositions.setOnClickListener(new MyOnClickListener(2));
+
+        tvTabPerson.setOnLongClickListener(new MyOnLongClickListener(0));
+        tvTabOrder.setOnLongClickListener(new MyOnLongClickListener(1));
+        tvTabPositions.setOnLongClickListener(new MyOnLongClickListener(2));
+
         etTeam_name.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -160,6 +174,22 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    public class MyOnLongClickListener implements View.OnLongClickListener {
+        private int index = 0;
+        public MyOnLongClickListener(int i) {
+            index = i;
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+            L.d("mPager=" + mPager.getCurrentItem());
+            if(mPager.getCurrentItem()==index) {
+                shotScreenAndsaveAndShare(getWindow().getDecorView().getRootView());
+            }
+            return false;
+        }
+    }
+
 
     private void InitViewPager() {
         mPager = getView(R.id.vPager);
@@ -167,7 +197,7 @@ public class MainActivity extends ActionBarActivity {
 
         Fragment personFragment = PersonFragment.newInstance();
         Fragment orderFragment = OrderFragment.newInstance();
-        Fragment positionsFragment= PositionsFragment2.newInstance();
+        Fragment positionsFragment = PositionsFragment2.newInstance();
 
         fragmentsList.add(personFragment);
         fragmentsList.add(orderFragment);
@@ -250,6 +280,70 @@ public class MainActivity extends ActionBarActivity {
 //        ft.add(mTeamNameDialogFragment, "TeamNameDialogFragment");
 //        ft.show(mTeamNameDialogFragment).commit();
     }
+
+    /*
+            1.vibrator
+            2. shot screen
+            3.checkPath
+            4.save Bitmap
+            5.share
+     */
+    private void shotScreenAndsaveAndShare(View view) {
+        try {
+            String path = StorageDirectory.getStorageDirectory(mAppContext, StorageDirectory.StorageType.ST_SDCard_RootDir) + PlayerDataManager.picPath;
+            File shotScreenFile = new File(path + "tmp.jpg");
+
+            doVibrator(100);
+            Bitmap shotScreen = screenShot(view);
+            StorageDirectory.checkPath(path);
+            saveBitmapToFile(shotScreen, shotScreenFile);
+            shareURI(Uri.fromFile(shotScreenFile));
+        } catch (Exception e) {
+            L.e(e.getMessage());
+        }
+    }
+
+    private Bitmap screenShot(View view) {
+        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(),
+                view.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
+        return bitmap;
+    }
+    private boolean saveBitmapToFile(Bitmap photoBitmap, File saveFile) {
+        if(photoBitmap!=null && saveFile!=null) {
+            try {
+                BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(saveFile));
+                photoBitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
+                bos.flush();
+                bos.close();
+            } catch (Exception e) {
+                L.e("Save file error!");
+                return false;
+            }
+            L.d("Save file ok!");
+            return true;
+        }
+        return false;
+    }
+
+    private void shareURI(Uri uri) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.setType("image/*");
+
+        intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "");
+        intent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
+        startActivity(Intent.createChooser(intent, "Share Cover Image"));
+    }
+
+    private void doVibrator(long milliseconds) {
+        Vibrator myVibrator = (Vibrator) getApplication().getSystemService(Service.VIBRATOR_SERVICE);
+        myVibrator.vibrate(milliseconds);
+    }
+
+
 
     public final <E extends View> E
     getView(int id) {

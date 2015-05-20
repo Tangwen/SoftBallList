@@ -5,9 +5,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.VelocityTrackerCompat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -40,6 +42,7 @@ public class PositionsFragment2 extends Fragment {
     private int viewSpace = 150;
     private int BPcount = 0;
     private boolean isMove = false;
+    private VelocityTracker mVelocityTracker = null;
 
     private static PositionsFragment2 newFragment;
     public static PositionsFragment2 newInstance() {
@@ -264,6 +267,8 @@ public class PositionsFragment2 extends Fragment {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
             int eventAction = motionEvent.getAction();
+            int index = motionEvent.getActionIndex();
+            int pointerId = motionEvent.getPointerId(index);
 
             int x = (int) motionEvent.getRawX();
             int y = (int) motionEvent.getRawY();
@@ -273,28 +278,54 @@ public class PositionsFragment2 extends Fragment {
             //L.d("view.getWidth()=" + view.getWidth() + ", view.getHeight()=" + view.getHeight() + ", eventAction=" + eventAction);
 
             switch (eventAction) {
-                case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
+                    recycleVelocityTracker();
+                case MotionEvent.ACTION_UP:
                     moveNearPosition(view, x-temp[0], y-temp[1]);
                     break;
                 case MotionEvent.ACTION_DOWN:
                     temp[0] = (int) motionEvent.getX();
                     temp[1] = y - view.getTop();
+
+                    initVelocityTracker();
+                    addMovementToVelocityTracker(motionEvent);
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    int l = x - temp[0];
-                    int t = y - temp[1];
-                    int r = x + view.getWidth() - temp[0];
-                    int b = y - temp[1] + view.getHeight();
+                    setViewXY(view, x - temp[0], y - temp[1]);
 
-                    view.layout(l, t, r, b);
-                    view.postInvalidate();
+                    addMovementToVelocityTracker(motionEvent);
+                    getVelocity(pointerId);
                     break;
             }
             return true;
         }
-
     };
+
+    private void setViewXY(View view, int newX, int newY) {
+        int l = newX;
+        int t = newY;
+        int r = newX + view.getWidth();
+        int b = newY + view.getHeight();
+
+        view.layout(l, t, r, b);
+        view.postInvalidate();
+    }
+    private void moveView(View view, int oldX, int oldY, int newX, int newY) {
+        try {
+            int step=50;
+            int disX = (newX-oldX);
+            int disY = (newY-oldY);
+            for(int i=0;i<step;i++) {
+                int tempX = oldX + (i*disX)/step;
+                int tempY = oldY + (i*disY)/step;
+                //L.d("[" + oldX + "," + oldY + "," + newX + "," + newY + "," + tempX + "," + tempY + "]");
+                setViewXY(view, tempX, tempY);
+            }
+            setViewXY(view, newX, newY);
+        } catch (Exception e) {
+
+        }
+    }
 
     private void moveNearPosition(View view, int x, int y) {
         try {
@@ -304,20 +335,25 @@ public class PositionsFragment2 extends Fragment {
                 isMove = true;
             }
             Position newPosition = getNearPosition(x, y);
+            int newPositionXY[] = positionViewPos.get(newPosition);
+            moveView(view, x, y, newPositionXY[0], newPositionXY[1]);
+
             Player mPlayer = (Player)view.getTag();
             if(newPosition==null) {
                 newPosition = mPlayer.position;
             } else {
                 mPlayer.position = newPosition;
             }
-            L.d("newPosition=" + newPosition);
+            //L.d("newPosition=" + newPosition);
             setAllView(positions_FrameLayout);
+
             orderPlayers.set(orderPlayers.indexOf(mPlayer), mPlayer);
             mPlayerDataManager.setOrderPlayers(orderPlayers);
         } catch (Exception e) {
             L.e(e);
         }
     }
+
     private Position getNearPosition(int x, int y) {
         Position nearPosition = null;
         double minDistance = 1000;
@@ -339,6 +375,7 @@ public class PositionsFragment2 extends Fragment {
         }
         return nearPosition;
     }
+
     private double calDistance(int x1, int y1, int x2, int y2) {
         try {
             return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
@@ -347,6 +384,38 @@ public class PositionsFragment2 extends Fragment {
         }
         return -1;
     }
+
+
+    //VelocityTracker
+    private void initVelocityTracker() {
+        if (mVelocityTracker == null) {
+            // Retrieve a new VelocityTracker object to watch the velocity
+            // of a motion.
+            mVelocityTracker = VelocityTracker.obtain();
+        } else {
+            // Reset the velocity tracker back to its initial state.
+            mVelocityTracker.clear();
+        }
+    }
+    private void addMovementToVelocityTracker(MotionEvent event) {
+        // Add a user's movement to the tracker.
+        mVelocityTracker.addMovement(event);
+    }
+    private void recycleVelocityTracker() {
+        // Return a VelocityTracker object back to be re-used by others.
+        //mVelocityTracker.recycle();
+        mVelocityTracker.clear();
+    }
+    private float[] getVelocity(int pointerId) {
+        float v[] = new float[2];
+        mVelocityTracker.computeCurrentVelocity(1000);
+        v[0] = VelocityTrackerCompat.getXVelocity(mVelocityTracker, pointerId);
+        v[1] = VelocityTrackerCompat.getYVelocity(mVelocityTracker, pointerId);
+        //L.d("X velocity:" + v[0] + "Y velocity:" + v[1]);
+        return v;
+    }
+
+
 
     enum SwitchDisplay {
         Name(0),
