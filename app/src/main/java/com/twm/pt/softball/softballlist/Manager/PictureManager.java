@@ -1,13 +1,17 @@
 package com.twm.pt.softball.softballlist.Manager;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -20,16 +24,17 @@ public class PictureManager {
     private static PictureManager mPictureManager = null;
     private Activity mActivity;
 
-    private static final int PHOTO_REQUEST_TAKEPHOTO = 1;// æ‹ç…§
-    private static final int PHOTO_REQUEST_GALLERYPHOTO = 2;// å¾ç›¸å†Šä¸­é¸æ“‡
-    private static final int PHOTO_REQUEST_CUTPHOTO = 3;// çµæœ
+    private static final int PHOTO_REQUEST_TAKEPHOTO = 1;// ©ç·Ó
+    private static final int PHOTO_REQUEST_GALLERYPHOTO = 2;// ±q¬Û¥U¤¤¿ï¾Ü
+    private static final int PHOTO_REQUEST_CUTPHOTO = 3;// µ²ªG
 
     private File photoFilePath;
     private String photoFileName;
     private File photoFile;
     private int aspectX=1, aspectY=1, outputX=300, outputY=300;
+    private boolean needCut = true;
 
-    private String TAG = "PictureManager";
+    private static final String TAG = "PictureManager";
 
     public static PictureManager getInstance(Activity mActivity) {
         if(mPictureManager==null) {
@@ -51,13 +56,13 @@ public class PictureManager {
 
 
     /**
-     * å–å¾—æ‹ç…§ç…§ç‰‡
+     * ¨ú±o©ç·Ó·Ó¤ù
      */
     public void takePhoto() {
         photoFile = new File(photoFilePath, photoFileName);
         if(mActivity!=null) {
             Intent cameraintent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            // æŒ‡å®šèª¿ç”¨ç›¸æ©Ÿæ‹ç…§å¾Œç…§ç‰‡çš„å„²å­˜è·¯å¾‘
+            // «ü©w½Õ¥Î¬Û¾÷©ç·Ó«á·Ó¤ùªºÀx¦s¸ô®|
             cameraintent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
             mActivity.startActivityForResult(cameraintent, PHOTO_REQUEST_TAKEPHOTO);
         }
@@ -66,7 +71,7 @@ public class PictureManager {
     public void galleryPhoto() {
         photoFile = new File(photoFilePath, photoFileName);
         if(mActivity!=null) {
-            //é–‹å•Ÿç›¸ç°¿ç›¸ç‰‡é›†ï¼Œé ˆç”±startActivityForResultä¸”å¸¶å…¥requestCodeé€²è¡Œå‘¼å«ï¼ŒåŸå› ç‚ºé»é¸ç›¸ç‰‡å¾Œè¿”å›ç¨‹å¼å‘¼å«onActivityResult
+            //¶}±Ò¬ÛÃ¯¬Û¤ù¶°¡A¶·¥ÑstartActivityForResult¥B±a¤JrequestCode¶i¦æ©I¥s¡A­ì¦]¬°ÂI¿ï¬Û¤ù«áªğ¦^µ{¦¡©I¥sonActivityResult
             Intent intent = new Intent();
             intent.setType("image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -75,20 +80,20 @@ public class PictureManager {
     }
 
     /**
-     * å‰ªè£åœ–ç‰‡
+     * °Åµô¹Ï¤ù
      * @param uri
      */
     private void cutPhoto(Uri uri) {
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(uri, "image/*");
-        // crop?trueæ˜¯è¨­ç½®åœ¨é–‹?çš„intentä¸­è¨­ç½®é¡¯ç¤ºçš„viewå¯ä»¥å‰ªè£
+        // crop?true¬O³]¸m¦b¶}?ªºintent¤¤³]¸mÅã¥Üªºview¥i¥H°Åµô
         intent.putExtra("crop", "true");
 
-        // aspectX aspectY æ˜¯å¯¬é«˜çš„æ¯”ä¾‹
+        // aspectX aspectY ¬O¼e°ªªº¤ñ¨Ò
         intent.putExtra("aspectX", aspectX);
         intent.putExtra("aspectY", aspectY);
 
-        // outputX,outputY æ˜¯å‰ªè£åœ–ç‰‡çš„å¯¬é«˜
+        // outputX,outputY ¬O°Åµô¹Ï¤ùªº¼e°ª
         intent.putExtra("outputX", outputX);
         intent.putExtra("outputY", outputY);
         intent.putExtra("return-data", true);
@@ -101,20 +106,26 @@ public class PictureManager {
         Bitmap photoBitmap = null;
         Log.d(TAG, "resultCode=" + resultCode);
         switch (requestCode) {
-            case PHOTO_REQUEST_TAKEPHOTO:// ç•¶é¸æ“‡æ‹ç…§æ™‚èª¿ç”¨
+            case PHOTO_REQUEST_TAKEPHOTO:// ·í¿ï¾Ü©ç·Ó®É½Õ¥Î
                 if(resultCode==Activity.RESULT_OK) {
-                    cutPhoto(Uri.fromFile(photoFile));
+                    photoBitmap = fileToBitmap(photoFile.getAbsolutePath());
+                    if(needCut) {
+                        cutPhoto(Uri.fromFile(photoFile));
+                    }
                 }
                 break;
-            case PHOTO_REQUEST_GALLERYPHOTO:// ç•¶é¸æ“‡å¾æœ¬åœ°ç²å–åœ–ç‰‡æ™‚
-                // åšéç©ºåˆ¤æ–·ï¼Œç•¶æˆ‘å€‘è¦ºå¾—ä¸æ»¿æ„æƒ³é‡æ–°å‰ªè£çš„æ™‚å€™ä¾¿ä¸æœƒå ±ç•°å¸¸ï¼Œä¸‹åŒ
+            case PHOTO_REQUEST_GALLERYPHOTO:// ·í¿ï¾Ü±q¥»¦aÀò¨ú¹Ï¤ù®É
+                // °µ«DªÅ§PÂ_¡A·í§Ú­ÌÄ±±o¤£º¡·N·Q­«·s°Åµôªº®É­Ô«K¤£·|³ø²§±`¡A¤U¦P
                 if (data != null)
-                    cutPhoto(data.getData());
+                    photoBitmap = getBitmapFromUri(data.getData());
+                    if(needCut) {
+                        cutPhoto(data.getData());
+                    }
                 break;
-            case PHOTO_REQUEST_CUTPHOTO:// è¿”å›çš„çµæœ
+            case PHOTO_REQUEST_CUTPHOTO:// ªğ¦^ªºµ²ªG
                 if (data != null)
                     photoBitmap = getPhotoData(data);
-                saveBitmapToFile(photoBitmap, photoFile);
+                    saveBitmapToFile(photoBitmap, photoFile);
                 break;
         }
         return photoBitmap;
@@ -130,7 +141,7 @@ public class PictureManager {
         return photoBitmap;
     }
 
-    private boolean saveBitmapToFile(Bitmap photoBitmap, File saveFile) {
+    public static boolean saveBitmapToFile(Bitmap photoBitmap, File saveFile) {
         if(photoBitmap!=null && saveFile!=null) {
             try {
                 BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(saveFile));
@@ -142,14 +153,50 @@ public class PictureManager {
                 Log.e(TAG, "Save file error!");
                 return false;
             }
-            Log.d(null, "Save file ok!");
+            Log.d(TAG, "Save file ok!");
             return true;
         }
         return false;
     }
 
+    private Bitmap fileToBitmap(String photoPath) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        Bitmap bitmap = BitmapFactory.decodeFile(photoPath, options);
+        return bitmap;
+    }
 
-    // ä½¿ç”¨ç³»çµ±ç•¶å‰æ—¥æœŸåŠ ä»¥èª¿æ•´ä½œ?ç…§ç‰‡çš„åç¨±
+    private Bitmap getBitmapFromUri(Uri uri) {
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(mActivity.getContentResolver(), uri);
+            return bitmap;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static Bitmap screenShot(View view) {
+        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(),
+                view.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
+        return bitmap;
+    }
+
+
+    public static void shareURI(Context mContext, Uri uri) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.setType("image/*");
+
+        intent.putExtra(Intent.EXTRA_SUBJECT, "");
+        intent.putExtra(Intent.EXTRA_TEXT, "");
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
+        mContext.startActivity(Intent.createChooser(intent, "Share Cover Image"));
+    }
+
+
+    // ¨Ï¥Î¨t²Î·í«e¤é´Á¥[¥H½Õ¾ã§@?·Ó¤ùªº¦WºÙ
     private String genPhotoFileName() {
         Date date = new Date(System.currentTimeMillis());
         SimpleDateFormat dateFormat = new SimpleDateFormat("'IMG'_yyyyMMdd_HHmmss");
@@ -167,8 +214,10 @@ public class PictureManager {
         return photoFilePath;
     }
 
+
+
     /**
-     * è¨­å®šè·¯å¾‘
+     * ³]©w¸ô®|
      * @param photoFilePath
      * @return
      */
@@ -183,7 +232,7 @@ public class PictureManager {
     }
 
     /**
-     * è¨­å®šæª”å
+     * ³]©wÀÉ¦W
      * @param photoFileName
      * @return
      */
@@ -193,7 +242,7 @@ public class PictureManager {
     }
 
     /**
-     * ä¾æ™‚é–“è‡ªå‹•ç”¢ç”Ÿæª”å
+     * ¨Ì®É¶¡¦Û°Ê²£¥ÍÀÉ¦W
      * @return
      */
     public PictureManager nextPhotoFileName() {
@@ -201,10 +250,19 @@ public class PictureManager {
         return this;
     }
 
+    public boolean isNeedCut() {
+        return needCut;
+    }
+
+    public PictureManager setNeedCut(boolean needCut) {
+        this.needCut = needCut;
+        return this;
+    }
+
     //Cut parameter
 
     /**
-     * å¯¬çš„æ¯”ä¾‹
+     * ¼eªº¤ñ¨Ò
      * @param aspectX
      * @return
      */
@@ -213,7 +271,7 @@ public class PictureManager {
         return this;
     }
     /**
-     * é«˜çš„æ¯”ä¾‹
+     * °ªªº¤ñ¨Ò
      * @param aspectY
      * @return
      */
@@ -223,7 +281,7 @@ public class PictureManager {
     }
 
     /**
-     * å‰ªè£åœ–ç‰‡çš„å¯¬
+     * °Åµô¹Ï¤ùªº¼e
      * @param outputX
      * @return
      */
@@ -233,7 +291,7 @@ public class PictureManager {
     }
 
     /**
-     * å‰ªè£åœ–ç‰‡çš„é«˜
+     * °Åµô¹Ï¤ùªº°ª
      * @param outputY
      * @return
      */

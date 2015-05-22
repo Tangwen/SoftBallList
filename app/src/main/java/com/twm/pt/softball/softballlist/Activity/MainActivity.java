@@ -27,6 +27,7 @@ import com.twm.pt.softball.softballlist.Fragment.OrderFragment;
 import com.twm.pt.softball.softballlist.Fragment.PersonFragment;
 import com.twm.pt.softball.softballlist.Fragment.PositionsFragment2;
 import com.twm.pt.softball.softballlist.Fragment.TeamNameDialogFragment;
+import com.twm.pt.softball.softballlist.Manager.PictureManager;
 import com.twm.pt.softball.softballlist.Manager.PlayerDataManager;
 import com.twm.pt.softball.softballlist.R;
 import com.twm.pt.softball.softballlist.utility.L;
@@ -294,49 +295,49 @@ public class MainActivity extends ActionBarActivity {
             File shotScreenFile = new File(path + "tmp.jpg");
 
             doVibrator(100);
-            Bitmap shotScreen = screenShot(view);
+            Bitmap shotScreen = PictureManager.screenShot(view);
             StorageDirectory.checkPath(path);
-            saveBitmapToFile(shotScreen, shotScreenFile);
-            shareURI(Uri.fromFile(shotScreenFile));
+            PictureManager.saveBitmapToFile(shotScreen, shotScreenFile);
+            PictureManager.shareURI(this, Uri.fromFile(shotScreenFile));
         } catch (Exception e) {
             L.e(e.getMessage());
         }
     }
 
-    private Bitmap screenShot(View view) {
-        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(),
-                view.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        view.draw(canvas);
-        return bitmap;
-    }
-    private boolean saveBitmapToFile(Bitmap photoBitmap, File saveFile) {
-        if(photoBitmap!=null && saveFile!=null) {
-            try {
-                BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(saveFile));
-                photoBitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
-                bos.flush();
-                bos.close();
-            } catch (Exception e) {
-                L.e("Save file error!");
-                return false;
-            }
-            L.d("Save file ok!");
-            return true;
-        }
-        return false;
-    }
-
-    private void shareURI(Uri uri) {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_SEND);
-        intent.setType("image/*");
-
-        intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "");
-        intent.putExtra(android.content.Intent.EXTRA_TEXT, "");
-        intent.putExtra(Intent.EXTRA_STREAM, uri);
-        startActivity(Intent.createChooser(intent, "Share Cover Image"));
-    }
+//    private Bitmap screenShot(View view) {
+//        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(),
+//                view.getHeight(), Bitmap.Config.ARGB_8888);
+//        Canvas canvas = new Canvas(bitmap);
+//        view.draw(canvas);
+//        return bitmap;
+//    }
+//    private boolean saveBitmapToFile(Bitmap photoBitmap, File saveFile) {
+//        if(photoBitmap!=null && saveFile!=null) {
+//            try {
+//                BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(saveFile));
+//                photoBitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
+//                bos.flush();
+//                bos.close();
+//            } catch (Exception e) {
+//                L.e("Save file error!");
+//                return false;
+//            }
+//            L.d("Save file ok!");
+//            return true;
+//        }
+//        return false;
+//    }
+//
+//    private void shareURI(Uri uri) {
+//        Intent intent = new Intent();
+//        intent.setAction(Intent.ACTION_SEND);
+//        intent.setType("image/*");
+//
+//        intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "");
+//        intent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+//        intent.putExtra(Intent.EXTRA_STREAM, uri);
+//        startActivity(Intent.createChooser(intent, "Share Cover Image"));
+//    }
 
     private void doVibrator(long milliseconds) {
         Vibrator myVibrator = (Vibrator) getApplication().getSystemService(Service.VIBRATOR_SERVICE);
