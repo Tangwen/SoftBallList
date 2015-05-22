@@ -180,9 +180,8 @@ public class PersonActivity extends ActionBarActivity {
 
 
 
-
+    //https://github.com/geftimov/android-player
     private void animateSampleOne(View toolbar, View picView, View nameLinearLayout, View nickLinearLayout, View numberLinearLayout, View habitsLinearLayout, View fielderLinearLayout) {
-        //https://github.com/geftimov/android-player
         final PropertyAction toolbarAction = PropertyAction.newPropertyAction(toolbar).interpolator(new DecelerateInterpolator()).translationY(-200).duration(300).alpha(0.4f).build();
 
         final PropertyAction picViewAction = PropertyAction.newPropertyAction(picView).rotation(-180).scaleX(0.1f).scaleY(0.1f).duration(300).build();
