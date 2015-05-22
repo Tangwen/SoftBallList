@@ -11,5 +11,15 @@
     <string name="ok">確認</string>
     <string name="cancel">取消</string>
     <string name="paid_text">此功能免費版本未提供，\n請購買付費版本，謝謝您！</string>
+    <string name="person_bar_title">球員基本資料</string>
 
+    <string name="action_edit">編輯</string>
+    <string name="action_share">分享</string>
+    <string name="action_discard">刪除</string>
+
+    <string name="person_activity_nnameText">姓名：</string>
+    <string name="person_activity_nickText">暱稱：</string>
+    <string name="person_activity_numberText">背號：</string>
+    <string name="person_activity_habitsText">投打：</string>
+    <string name="person_activity_fielderText">位置：</string>
 </resources>

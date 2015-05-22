@@ -1,6 +1,7 @@
 package com.twm.pt.softball.softballlist.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.twm.pt.softball.softballlist.Activity.PersonActivity;
 import com.twm.pt.softball.softballlist.Manager.PlayerDataManager;
 import com.twm.pt.softball.softballlist.R;
 import com.twm.pt.softball.softballlist.component.Player;
@@ -24,7 +26,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
 
     private ArrayList<Player> playerArrayList;
     private Context mContext;
-    private String picPath;
+    private final String picPath = "file://" + StorageDirectory.getStorageDirectory(mContext, StorageDirectory.StorageType.ST_SDCard_RootDir) + PlayerDataManager.picPath;;
     private ArrayList<View.OnClickListener> mListener = new ArrayList<View.OnClickListener> ();
     private ArrayList<View.OnClickListener> mPresentListener = new ArrayList<View.OnClickListener> ();
     private int setFullSpanPosition = -1;
@@ -53,6 +55,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
             person_habits = getView(itemLayoutView, R.id.person_habits);
             person_fielder = getView(itemLayoutView, R.id.person_fielder);
             person_present = getView(itemLayoutView, R.id.person_present);
+            mImageView.setOnClickListener(onImageViewClickListener);
             person_present.setOnClickListener(onPresentClickListener);
         }
 
@@ -63,12 +66,22 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
             } else {
                 setFullSpanPosition = getLayoutPosition();
             }
-            notifyDataSetChanged();
+//            notifyDataSetChanged();
             for (View.OnClickListener listener: mListener) {
                 view.setTag(getLayoutPosition());
                 listener.onClick(view);
             }
         }
+
+        View.OnClickListener onImageViewClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, PersonActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("Player", playerArrayList.get(getLayoutPosition()));
+                mContext.startActivity(intent);
+            }
+        };
 
         View.OnClickListener onPresentClickListener = new View.OnClickListener() {
             @Override
@@ -86,7 +99,6 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
     public PersonListAdapter(Context context, ArrayList<Player> playerArrayList) {
         mContext = context;
         this.playerArrayList = playerArrayList;
-        picPath = "file://" + StorageDirectory.getStorageDirectory(mContext, StorageDirectory.StorageType.ST_SDCard_RootDir) + PlayerDataManager.picPath;
     }
 
     // Create new views (invoked by the layout manager)

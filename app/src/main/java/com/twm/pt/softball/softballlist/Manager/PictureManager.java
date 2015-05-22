@@ -20,9 +20,9 @@ public class PictureManager {
     private static PictureManager mPictureManager = null;
     private Activity mActivity;
 
-    private static final int PHOTO_REQUEST_TAKEPHOTO = 1;// ©ç·Ó
-    private static final int PHOTO_REQUEST_GALLERYPHOTO = 2;// ±q¬Û¥U¤¤¿ï¾Ü
-    private static final int PHOTO_REQUEST_CUTPHOTO = 3;// µ²ªG
+    private static final int PHOTO_REQUEST_TAKEPHOTO = 1;// æ‹ç…§
+    private static final int PHOTO_REQUEST_GALLERYPHOTO = 2;// å¾ç›¸å†Šä¸­é¸æ“‡
+    private static final int PHOTO_REQUEST_CUTPHOTO = 3;// çµæœ
 
     private File photoFilePath;
     private String photoFileName;
@@ -51,13 +51,13 @@ public class PictureManager {
 
 
     /**
-     * ¨ú±o©ç·Ó·Ó¤ù
+     * å–å¾—æ‹ç…§ç…§ç‰‡
      */
     public void takePhoto() {
         photoFile = new File(photoFilePath, photoFileName);
         if(mActivity!=null) {
             Intent cameraintent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            // «ü©w½Õ¥Î¬Û¾÷©ç·Ó«á·Ó¤ùªºÀx¦s¸ô®|
+            // æŒ‡å®šèª¿ç”¨ç›¸æ©Ÿæ‹ç…§å¾Œç…§ç‰‡çš„å„²å­˜è·¯å¾‘
             cameraintent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
             mActivity.startActivityForResult(cameraintent, PHOTO_REQUEST_TAKEPHOTO);
         }
@@ -66,7 +66,7 @@ public class PictureManager {
     public void galleryPhoto() {
         photoFile = new File(photoFilePath, photoFileName);
         if(mActivity!=null) {
-            //¶}±Ò¬ÛÃ¯¬Û¤ù¶°¡A¶·¥ÑstartActivityForResult¥B±a¤JrequestCode¶i¦æ©I¥s¡A­ì¦]¬°ÂI¿ï¬Û¤ù«áªğ¦^µ{¦¡©I¥sonActivityResult
+            //é–‹å•Ÿç›¸ç°¿ç›¸ç‰‡é›†ï¼Œé ˆç”±startActivityForResultä¸”å¸¶å…¥requestCodeé€²è¡Œå‘¼å«ï¼ŒåŸå› ç‚ºé»é¸ç›¸ç‰‡å¾Œè¿”å›ç¨‹å¼å‘¼å«onActivityResult
             Intent intent = new Intent();
             intent.setType("image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -75,20 +75,20 @@ public class PictureManager {
     }
 
     /**
-     * °Åµô¹Ï¤ù
+     * å‰ªè£åœ–ç‰‡
      * @param uri
      */
     private void cutPhoto(Uri uri) {
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(uri, "image/*");
-        // crop?true¬O³]¸m¦b¶}?ªºintent¤¤³]¸mÅã¥Üªºview¥i¥H°Åµô
+        // crop?trueæ˜¯è¨­ç½®åœ¨é–‹?çš„intentä¸­è¨­ç½®é¡¯ç¤ºçš„viewå¯ä»¥å‰ªè£
         intent.putExtra("crop", "true");
 
-        // aspectX aspectY ¬O¼e°ªªº¤ñ¨Ò
+        // aspectX aspectY æ˜¯å¯¬é«˜çš„æ¯”ä¾‹
         intent.putExtra("aspectX", aspectX);
         intent.putExtra("aspectY", aspectY);
 
-        // outputX,outputY ¬O°Åµô¹Ï¤ùªº¼e°ª
+        // outputX,outputY æ˜¯å‰ªè£åœ–ç‰‡çš„å¯¬é«˜
         intent.putExtra("outputX", outputX);
         intent.putExtra("outputY", outputY);
         intent.putExtra("return-data", true);
@@ -101,20 +101,20 @@ public class PictureManager {
         Bitmap photoBitmap = null;
         Log.d(TAG, "resultCode=" + resultCode);
         switch (requestCode) {
-            case PHOTO_REQUEST_TAKEPHOTO:// ·í¿ï¾Ü©ç·Ó®É½Õ¥Î
+            case PHOTO_REQUEST_TAKEPHOTO:// ç•¶é¸æ“‡æ‹ç…§æ™‚èª¿ç”¨
                 if(resultCode==Activity.RESULT_OK) {
                     cutPhoto(Uri.fromFile(photoFile));
                 }
                 break;
-            case PHOTO_REQUEST_GALLERYPHOTO:// ·í¿ï¾Ü±q¥»¦aÀò¨ú¹Ï¤ù®É
-                // °µ«DªÅ§PÂ_¡A·í§Ú­ÌÄ±±o¤£º¡·N·Q­«·s°Åµôªº®É­Ô«K¤£·|³ø²§±`¡A¤U¦P
+            case PHOTO_REQUEST_GALLERYPHOTO:// ç•¶é¸æ“‡å¾æœ¬åœ°ç²å–åœ–ç‰‡æ™‚
+                // åšéç©ºåˆ¤æ–·ï¼Œç•¶æˆ‘å€‘è¦ºå¾—ä¸æ»¿æ„æƒ³é‡æ–°å‰ªè£çš„æ™‚å€™ä¾¿ä¸æœƒå ±ç•°å¸¸ï¼Œä¸‹åŒ
                 if (data != null)
                     cutPhoto(data.getData());
                 break;
-            case PHOTO_REQUEST_CUTPHOTO:// ªğ¦^ªºµ²ªG
+            case PHOTO_REQUEST_CUTPHOTO:// è¿”å›çš„çµæœ
                 if (data != null)
                     photoBitmap = getPhotoData(data);
-                    saveBitmapToFile(photoBitmap, photoFile);
+                saveBitmapToFile(photoBitmap, photoFile);
                 break;
         }
         return photoBitmap;
@@ -149,7 +149,7 @@ public class PictureManager {
     }
 
 
-    // ¨Ï¥Î¨t²Î·í«e¤é´Á¥[¥H½Õ¾ã§@?·Ó¤ùªº¦WºÙ
+    // ä½¿ç”¨ç³»çµ±ç•¶å‰æ—¥æœŸåŠ ä»¥èª¿æ•´ä½œ?ç…§ç‰‡çš„åç¨±
     private String genPhotoFileName() {
         Date date = new Date(System.currentTimeMillis());
         SimpleDateFormat dateFormat = new SimpleDateFormat("'IMG'_yyyyMMdd_HHmmss");
@@ -168,7 +168,7 @@ public class PictureManager {
     }
 
     /**
-     * ³]©w¸ô®|
+     * è¨­å®šè·¯å¾‘
      * @param photoFilePath
      * @return
      */
@@ -183,7 +183,7 @@ public class PictureManager {
     }
 
     /**
-     * ³]©wÀÉ¦W
+     * è¨­å®šæª”å
      * @param photoFileName
      * @return
      */
@@ -193,7 +193,7 @@ public class PictureManager {
     }
 
     /**
-     * ¨Ì®É¶¡¦Û°Ê²£¥ÍÀÉ¦W
+     * ä¾æ™‚é–“è‡ªå‹•ç”¢ç”Ÿæª”å
      * @return
      */
     public PictureManager nextPhotoFileName() {
@@ -204,7 +204,7 @@ public class PictureManager {
     //Cut parameter
 
     /**
-     * ¼eªº¤ñ¨Ò
+     * å¯¬çš„æ¯”ä¾‹
      * @param aspectX
      * @return
      */
@@ -213,7 +213,7 @@ public class PictureManager {
         return this;
     }
     /**
-     * °ªªº¤ñ¨Ò
+     * é«˜çš„æ¯”ä¾‹
      * @param aspectY
      * @return
      */
@@ -223,7 +223,7 @@ public class PictureManager {
     }
 
     /**
-     * °Åµô¹Ï¤ùªº¼e
+     * å‰ªè£åœ–ç‰‡çš„å¯¬
      * @param outputX
      * @return
      */
@@ -233,7 +233,7 @@ public class PictureManager {
     }
 
     /**
-     * °Åµô¹Ï¤ùªº°ª
+     * å‰ªè£åœ–ç‰‡çš„é«˜
      * @param outputY
      * @return
      */

@@ -3,6 +3,7 @@ package com.twm.pt.softball.softballlist.Fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -17,6 +18,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.twm.pt.softball.softballlist.Activity.PersonActivity;
 import com.twm.pt.softball.softballlist.Adapter.PersonListAdapter;
 import com.twm.pt.softball.softballlist.Manager.PlayerDataManager;
 import com.twm.pt.softball.softballlist.R;
@@ -85,8 +87,11 @@ public class PersonFragment extends Fragment {
         plus_person.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PaidDialogFragment paidDialogFragment = new PaidDialogFragment();
-                paidDialogFragment.show(getFragmentManager(), "PaidDialogFragment");
+//                PaidDialogFragment paidDialogFragment = new PaidDialogFragment();
+//                paidDialogFragment.show(getFragmentManager(), "PaidDialogFragment");
+                Intent intent = new Intent(mContext, PersonActivity.class);
+//                //intent.putExtra("picUrlArray", mAdapter.getItem(pos).picUrlArray);
+                startActivity(intent);
             }
         });
         return view;

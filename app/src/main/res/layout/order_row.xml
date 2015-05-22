@@ -39,16 +39,10 @@
 
             <TextView android:id="@+id/person_name"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
                 android:layout_alignWithParentIfMissing="true"
                 android:layout_centerVertical="true"
-                android:ellipsize="marquee"
-                android:singleLine="true"
-                android:textColor="@color/yellow"
-                android:textStyle="bold"
-                android:textSize="22sp"
+                style="@style/PersonName"
                 />
             <TextView
                 android:id="@+id/person_number"
