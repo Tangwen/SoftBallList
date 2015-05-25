@@ -12,6 +12,7 @@
     <string name="cancel">取消</string>
     <string name="paid_text">此功能免費版本未提供，\n請購買付費版本，謝謝您！</string>
     <string name="person_bar_title">球員基本資料</string>
+    <string name="alert_dialog_delete">確定刪除該筆資料?</string>
 
     <string name="action_edit">編輯</string>
     <string name="action_share">分享</string>
@@ -22,4 +23,11 @@
     <string name="person_activity_numberText">背號：</string>
     <string name="person_activity_habitsText">投打：</string>
     <string name="person_activity_fielderText">位置：</string>
+
+    <string name="picture_dialog_TakePhotoText"> 　　從 相 機　　</string>
+    <string name="picture_dialog_GalleryPhotoText">　　從 相 簿　　</string>
+    <string name="picture_dialog_CancelText">　　取  消　　</string>
+
+    <string name="def_name">強打者</string>
+    <string name="def_nick">強者</string>
 </resources>

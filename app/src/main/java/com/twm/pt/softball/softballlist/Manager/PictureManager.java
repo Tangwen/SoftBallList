@@ -24,9 +24,9 @@ public class PictureManager {
     private static PictureManager mPictureManager = null;
     private Activity mActivity;
 
-    private static final int PHOTO_REQUEST_TAKEPHOTO = 1;// 拍照
-    private static final int PHOTO_REQUEST_GALLERYPHOTO = 2;// 從相冊中選擇
-    private static final int PHOTO_REQUEST_CUTPHOTO = 3;// 結果
+    private static final int PHOTO_REQUEST_TAKEPHOTO = 1;// Take photo
+    private static final int PHOTO_REQUEST_GALLERYPHOTO = 2;// Gallery photo
+    private static final int PHOTO_REQUEST_CUTPHOTO = 3;// Cut photo
 
     private File photoFilePath;
     private String photoFileName;
@@ -56,22 +56,23 @@ public class PictureManager {
 
 
     /**
-     * 取得拍照照片
+     * Take photo
      */
     public void takePhoto() {
         photoFile = new File(photoFilePath, photoFileName);
         if(mActivity!=null) {
             Intent cameraintent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            // 指定調用相機拍照後照片的儲存路徑
             cameraintent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
             mActivity.startActivityForResult(cameraintent, PHOTO_REQUEST_TAKEPHOTO);
         }
     }
 
+    /**
+     * Gallery photo
+     */
     public void galleryPhoto() {
         photoFile = new File(photoFilePath, photoFileName);
         if(mActivity!=null) {
-            //開啟相簿相片集，須由startActivityForResult且帶入requestCode進行呼叫，原因為點選相片後返回程式呼叫onActivityResult
             Intent intent = new Intent();
             intent.setType("image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -80,20 +81,19 @@ public class PictureManager {
     }
 
     /**
-     * 剪裁圖片
+     * Cut photo
      * @param uri
      */
     private void cutPhoto(Uri uri) {
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(uri, "image/*");
-        // crop?true是設置在開?的intent中設置顯示的view可以剪裁
         intent.putExtra("crop", "true");
 
-        // aspectX aspectY 是寬高的比例
+        // aspectX aspectY: w/h rate
         intent.putExtra("aspectX", aspectX);
         intent.putExtra("aspectY", aspectY);
 
-        // outputX,outputY 是剪裁圖片的寬高
+        // outputX,outputY: cut w/h
         intent.putExtra("outputX", outputX);
         intent.putExtra("outputY", outputY);
         intent.putExtra("return-data", true);
@@ -106,7 +106,7 @@ public class PictureManager {
         Bitmap photoBitmap = null;
         Log.d(TAG, "resultCode=" + resultCode);
         switch (requestCode) {
-            case PHOTO_REQUEST_TAKEPHOTO:// 當選擇拍照時調用
+            case PHOTO_REQUEST_TAKEPHOTO:
                 if(resultCode==Activity.RESULT_OK) {
                     photoBitmap = fileToBitmap(photoFile.getAbsolutePath());
                     if(needCut) {
@@ -114,15 +114,14 @@ public class PictureManager {
                     }
                 }
                 break;
-            case PHOTO_REQUEST_GALLERYPHOTO:// 當選擇從本地獲取圖片時
-                // 做非空判斷，當我們覺得不滿意想重新剪裁的時候便不會報異常，下同
+            case PHOTO_REQUEST_GALLERYPHOTO:
                 if (data != null)
                     photoBitmap = getBitmapFromUri(data.getData());
                     if(needCut) {
                         cutPhoto(data.getData());
                     }
                 break;
-            case PHOTO_REQUEST_CUTPHOTO:// 返回的結果
+            case PHOTO_REQUEST_CUTPHOTO:
                 if (data != null)
                     photoBitmap = getPhotoData(data);
                     saveBitmapToFile(photoBitmap, photoFile);
@@ -196,7 +195,6 @@ public class PictureManager {
     }
 
 
-    // 使用系統當前日期加以調整作?照片的名稱
     private String genPhotoFileName() {
         Date date = new Date(System.currentTimeMillis());
         SimpleDateFormat dateFormat = new SimpleDateFormat("'IMG'_yyyyMMdd_HHmmss");
@@ -217,7 +215,6 @@ public class PictureManager {
 
 
     /**
-     * 設定路徑
      * @param photoFilePath
      * @return
      */
@@ -232,7 +229,6 @@ public class PictureManager {
     }
 
     /**
-     * 設定檔名
      * @param photoFileName
      * @return
      */
@@ -242,7 +238,6 @@ public class PictureManager {
     }
 
     /**
-     * 依時間自動產生檔名
      * @return
      */
     public PictureManager nextPhotoFileName() {
@@ -262,7 +257,7 @@ public class PictureManager {
     //Cut parameter
 
     /**
-     * 寬的比例
+     * Width Rate
      * @param aspectX
      * @return
      */
@@ -271,7 +266,7 @@ public class PictureManager {
         return this;
     }
     /**
-     * 高的比例
+     * Height Rate
      * @param aspectY
      * @return
      */
@@ -281,7 +276,7 @@ public class PictureManager {
     }
 
     /**
-     * 剪裁圖片的寬
+     * Cut Width
      * @param outputX
      * @return
      */
@@ -291,7 +286,7 @@ public class PictureManager {
     }
 
     /**
-     * 剪裁圖片的高
+     * Cut Height
      * @param outputY
      * @return
      */

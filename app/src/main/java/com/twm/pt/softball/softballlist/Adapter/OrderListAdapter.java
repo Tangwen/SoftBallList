@@ -98,8 +98,9 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
 
             if(position==playPos) {
                 holder.name.setTextColor(mContext.getResources().getColor(R.color.blue));
-                int time = (int)System.currentTimeMillis();
-                holder.bat.setImageDrawable(emotion_icons.getDrawable(time%emotion_icons.length()));
+                long time = System.currentTimeMillis()% 10000000;
+                //L.d("time=" + time + ", emotion_icons.length()="+emotion_icons.length()+", (int)time%emotion_icons.length()=" + (int)time%emotion_icons.length());
+                holder.bat.setImageDrawable(emotion_icons.getDrawable((int)time%emotion_icons.length()));
                 holder.bat.setVisibility(View.VISIBLE);
             } else {
                 holder.name.setTextColor(mContext.getResources().getColor(R.color.yellow));

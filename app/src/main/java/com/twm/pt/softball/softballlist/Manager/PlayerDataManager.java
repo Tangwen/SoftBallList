@@ -108,17 +108,21 @@ public class PlayerDataManager {
         players = allPlayers;
         players = sortByNumber(players);
         SavePlayer();
-        for(onPlayerChangeListener mListener : mAllPlayerListener) {
-            mListener.onChange(players);
-        }
+        notifyAllPlayersOnChangeListener();
     }
-    public void addAllPlayers(Player mPlayer) {
+    public void add_AllPlayers(Player mPlayer) {
         players.add(mPlayer);
-        setAllPlayers(players);
+        players = sortByNumber(players);
+        SavePlayer();
+        notifyAllPlayersOnChangeListener();
     }
-    public void removePlayers(Player mPlayer) {
+    public void remove_AllPlayers(Player mPlayer) {
+        L.d(""+players.size() + "number=" + mPlayer.number);
+        L.d("index=" + players.indexOf(mPlayer));
         players.remove(mPlayer);
-        setAllPlayers(players);
+        L.d("" + players.size());
+        SavePlayer();
+        notifyAllPlayersOnChangeListener();
     }
     public void setAllPlayersOnChangeListener(onPlayerChangeListener mListener) {
         mAllPlayerListener.add(mListener);
@@ -126,7 +130,11 @@ public class PlayerDataManager {
     public void removeAllPlayersOnChangeListener(onPlayerChangeListener mListener) {
         mAllPlayerListener.remove(mListener);
     }
-
+    private void notifyAllPlayersOnChangeListener() {
+        for(onPlayerChangeListener mListener : mAllPlayerListener) {
+            mListener.onChange(players);
+        }
+    }
 
 
     public ArrayList<Player> getOrderPlayers() {
@@ -144,10 +152,7 @@ public class PlayerDataManager {
             players.set(players.indexOf(mPlayer), mPlayer);
         }
         SavePlayer();
-        ArrayList<Player> newOrderPlayers = getOrderPlayers();
-        for(onPlayerChangeListener mListener : mOrderPlayerListener) {
-            mListener.onChange(newOrderPlayers);
-        }
+        notifyOrderPlayersOnChangeListener();
     }
     public void setOrderPlayersOnChangeListener(onPlayerChangeListener mListener) {
         mOrderPlayerListener.add(mListener);
@@ -155,7 +160,12 @@ public class PlayerDataManager {
     public void removeOrderPlayersOnChangeListener(onPlayerChangeListener mListener) {
         mOrderPlayerListener.remove(mListener);
     }
-
+    private void notifyOrderPlayersOnChangeListener() {
+        ArrayList<Player> newOrderPlayers = getOrderPlayers();
+        for(onPlayerChangeListener mListener : mOrderPlayerListener) {
+            mListener.onChange(newOrderPlayers);
+        }
+    }
 
 
     private ArrayList<Player> sortByNumber(ArrayList<Player> sortPlayer) {

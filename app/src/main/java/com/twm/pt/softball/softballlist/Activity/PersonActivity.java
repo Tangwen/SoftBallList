@@ -1,7 +1,10 @@
 package com.twm.pt.softball.softballlist.Activity;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.CardView;
@@ -18,9 +21,15 @@ import android.widget.TextView;
 import com.eftimoff.androidplayer.Player;
 import com.eftimoff.androidplayer.actions.property.PropertyAction;
 import com.squareup.picasso.Picasso;
+import com.twm.pt.softball.softballlist.Fragment.DeleteDialogFragment;
+import com.twm.pt.softball.softballlist.Fragment.PictureDialogFragment;
+import com.twm.pt.softball.softballlist.Manager.PictureManager;
 import com.twm.pt.softball.softballlist.Manager.PlayerDataManager;
 import com.twm.pt.softball.softballlist.R;
+import com.twm.pt.softball.softballlist.utility.L;
 import com.twm.pt.softball.softballlist.utility.StorageDirectory;
+
+import java.io.File;
 
 
 public class PersonActivity extends ActionBarActivity {
@@ -107,6 +116,13 @@ public class PersonActivity extends ActionBarActivity {
         changeEditMode(mEditMode);
 
         animateSampleOne(person_activity_toolbar, person_activity_CardView, person_activity_nameLinearLayout, person_activity_nickLinearLayout, person_activity_numberLinearLayout, person_activity_habitsLinearLayout, person_activity_fielderLinearLayout);
+
+        person_activity_plusIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openPlusIconDialog();
+            }
+        });
     }
 
 
@@ -156,6 +172,10 @@ public class PersonActivity extends ActionBarActivity {
         person_activity_numberTextView.setText(player.number);
         person_activity_habitsTextView.setText(player.habits);
         person_activity_fielderTextView.setText(player.fielder.getFielderName());
+
+        person_activity_nameEditText.setText(player.Name);
+        person_activity_nickEditText.setText(player.nickName);
+        person_activity_numberEditText.setText(player.number);
     }
 
     @Override
@@ -168,9 +188,12 @@ public class PersonActivity extends ActionBarActivity {
             case R.id.action_edit:
                 mEditMode = !mEditMode;
                 changeEditMode(mEditMode);
+                return true;
             case R.id.action_share:
+                shotScreenAndsaveAndShare(getWindow().getDecorView().getRootView());
                 return true;
             case R.id.action_discard:
+                openDeleteDialogFragment();
                 return true;
             default:
                 break;
@@ -179,6 +202,56 @@ public class PersonActivity extends ActionBarActivity {
     }
 
 
+    /*
+            1. shot screen
+            2.checkPath
+            3.save Bitmap
+            4.share
+     */
+    private void shotScreenAndsaveAndShare(View view) {
+        try {
+            String path = StorageDirectory.getStorageDirectory(this, StorageDirectory.StorageType.ST_SDCard_RootDir) + PlayerDataManager.picPath;
+            File shotScreenFile = new File(path + "tmp.jpg");
+
+            Bitmap shotScreen = PictureManager.screenShot(view);
+            StorageDirectory.checkPath(path);
+            PictureManager.saveBitmapToFile(shotScreen, shotScreenFile);
+            PictureManager.shareURI(this, Uri.fromFile(shotScreenFile));
+        } catch (Exception e) {
+            L.e(e.getMessage());
+        }
+    }
+
+    private void openDeleteDialogFragment() {
+        DeleteDialogFragment deleteDialogFragment = new DeleteDialogFragment();
+        deleteDialogFragment.setOnDialogResultListener(new DeleteDialogFragment.OnDialogResultListener() {
+            @Override
+            public void onClickPositiveButton() {
+                PlayerDataManager.getInstance(getApplicationContext()).remove_AllPlayers(mPlayer);
+                finish();
+            }
+
+            @Override
+            public void onClickNegativeButton() {
+                //
+            }
+        });
+        deleteDialogFragment.show(getSupportFragmentManager(), "DeleteDialogFragment");
+    }
+
+    private void openPlusIconDialog() {
+        PictureDialogFragment mPictureDialogFragment = new PictureDialogFragment();
+        mPictureDialogFragment.setOnDialogResultListener(onDialogResultListener);
+        FragmentManager mFragmentManager = getSupportFragmentManager();
+        mPictureDialogFragment.show(mFragmentManager, "PictureDialogFragment");
+    }
+
+    PictureDialogFragment.OnDialogResultListener onDialogResultListener = new PictureDialogFragment.OnDialogResultListener() {
+        @Override
+        public void onResult(int choose) {
+            L.d("choose=" + choose);
+        }
+    };
 
     //https://github.com/geftimov/android-player
     private void animateSampleOne(View toolbar, View picView, View nameLinearLayout, View nickLinearLayout, View numberLinearLayout, View habitsLinearLayout, View fielderLinearLayout) {

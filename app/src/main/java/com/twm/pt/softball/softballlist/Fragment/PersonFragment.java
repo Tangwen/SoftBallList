@@ -4,6 +4,7 @@ package com.twm.pt.softball.softballlist.Fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -23,6 +24,7 @@ import com.twm.pt.softball.softballlist.Adapter.PersonListAdapter;
 import com.twm.pt.softball.softballlist.Manager.PlayerDataManager;
 import com.twm.pt.softball.softballlist.R;
 import com.twm.pt.softball.softballlist.component.Player;
+import com.twm.pt.softball.softballlist.component.Position;
 import com.twm.pt.softball.softballlist.utility.L;
 
 import java.util.ArrayList;
@@ -87,11 +89,8 @@ public class PersonFragment extends Fragment {
         plus_person.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                PaidDialogFragment paidDialogFragment = new PaidDialogFragment();
-//                paidDialogFragment.show(getFragmentManager(), "PaidDialogFragment");
-                Intent intent = new Intent(mContext, PersonActivity.class);
-//                //intent.putExtra("picUrlArray", mAdapter.getItem(pos).picUrlArray);
-                startActivity(intent);
+                Player mPlayer = newPlayer();
+                openPersonActivity(mPlayer);
             }
         });
         return view;
@@ -106,7 +105,7 @@ public class PersonFragment extends Fragment {
     
     @Override
     public void onResume() {
-    	L.d( "TestFragment-----onResume");
+    	L.d("TestFragment-----onResume");
     	super.onResume();
     }
     
@@ -125,7 +124,7 @@ public class PersonFragment extends Fragment {
         mPlayerDataManager.removeAllPlayersOnChangeListener(allPlayersOnChangeListener);
         mPlayerDataManager.removeOrderPlayersOnChangeListener(orderPlayersOnChangeListener);
         super.onDestroy();
-        L.d( "TestFragment-----onDestroy");
+        L.d("TestFragment-----onDestroy");
     }
 
     @Override
@@ -202,6 +201,18 @@ public class PersonFragment extends Fragment {
         }
     }
 
+    private Player newPlayer() {
+        Resources res = getResources();
+        Player mPlayer = new Player(res.getString(R.string.def_name), res.getString(R.string.def_nick), null, "999", "R/R", Player.Fielder.all_fielder, Position.BenchPlayer);
+        mPlayerDataManager.add_AllPlayers(mPlayer);
+        return mPlayer;
+    }
+    private void openPersonActivity(Player mPlayer) {
+        Intent intent = new Intent(mContext, PersonActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("Player", mPlayer);
+        mContext.startActivity(intent);
+    }
 
     View.OnClickListener onPresentClickListener = new View.OnClickListener() {
         @Override

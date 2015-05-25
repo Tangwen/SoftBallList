@@ -84,7 +84,7 @@ public class Player implements Serializable {
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
         Player other = (Player) obj;
-        if (number != other.number) return false;
+        if (!number.equals(other.number)) return false;
         return true;
     }
 
