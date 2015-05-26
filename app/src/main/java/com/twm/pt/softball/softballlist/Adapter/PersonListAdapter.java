@@ -76,10 +76,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
         View.OnClickListener onImageViewClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(mContext, PersonActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra("Player", playerArrayList.get(getLayoutPosition()));
-                mContext.startActivity(intent);
+                openPersonActivity();
             }
         };
 
@@ -93,6 +90,13 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
                 }
             }
         };
+
+        private void openPersonActivity() {
+            Intent intent = new Intent(mContext, PersonActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("Player", playerArrayList.get(getLayoutPosition()));
+            mContext.startActivity(intent);
+        }
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)

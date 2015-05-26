@@ -2,6 +2,7 @@ package com.twm.pt.softball.softballlist.Adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.twm.pt.softball.softballlist.Activity.PersonActivity;
 import com.twm.pt.softball.softballlist.Fragment.PaidDialogFragment;
 import com.twm.pt.softball.softballlist.Fragment.PositionsDialogFragment;
 import com.twm.pt.softball.softballlist.Manager.PlayerDataManager;
@@ -66,7 +68,11 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
             holder.positions.setOnClickListener(positionsClick);
             holder.average.setOnClickListener(averageClick);
             holder.name.setOnClickListener(batPosClick);
+            holder.number.setOnClickListener(batPosClick);
             holder.bat.setOnClickListener(batPosClick);
+
+            holder.name.setOnLongClickListener(nameOnLongClickListener);
+            holder.number.setOnLongClickListener(nameOnLongClickListener);
 
             view.setTag(holder);
         } else {
@@ -89,11 +95,16 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
                 holder.order_id.setText(String.valueOf(position + 1));
             }
             holder.positions.setText(mPlayer.position.getShortName());
-            holder.positions.setTag(mPlayer);
             holder.name.setText(mPlayer.Name);
-            holder.name.setTag(position);
-            holder.bat.setTag(position);
             holder.number.setText(mPlayer.number);
+
+            //Set Tag
+            holder.name.setTag(position);
+            holder.number.setTag(position);
+            holder.bat.setTag(position);
+            holder.positions.setTag(mPlayer);
+
+            //Set player
             mPlayer.order_id = position + 1;
 
             if(position==playPos) {
@@ -168,6 +179,15 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
         }
     };
 
+    View.OnLongClickListener nameOnLongClickListener = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View view) {
+            int pos =  (int) view.getTag();
+            openPersonActivity(pos);
+            return false;
+        }
+    };
+
     private void showPositionDialogFragment(Player mPlayer) {
         int[] positionCountArrayList = getPositionCountArrayList();
         PositionsDialogFragment positionsDialogFragment = new PositionsDialogFragment();
@@ -189,6 +209,12 @@ public class OrderListAdapter extends ArrayAdapter<Player> {
         notifyDataSetChanged();
     }
 
+    private void openPersonActivity(int pos) {
+        Intent intent = new Intent(mContext, PersonActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("Player", orderPlayerArrayList.get(pos));
+        mContext.startActivity(intent);
+    }
 
 
     public ArrayList<Player> getOrderPlayerArrayList() {
