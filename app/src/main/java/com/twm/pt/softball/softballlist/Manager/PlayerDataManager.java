@@ -20,6 +20,8 @@ public class PlayerDataManager {
     public static String picPath = "/Pictures/SoftBall/";
     public static final Type arrayListPlayerType = new TypeToken<ArrayList<Player>>() {}.getType();
     public static final String BP_number = "444";
+    public static final String New_number = "999";
+    public static final String New_habits = "R/R";
 
     private String sharedPreferencesKey = "PlayerData";
     private ArrayList<Player> players = new ArrayList<>();

@@ -80,11 +80,7 @@ public class PersonFragment extends Fragment {
         mAdapter = new PersonListAdapter(mContext, players);
         mAdapter.setPresentOnClickListener(onPresentClickListener);
         mRecyclerView.setAdapter(mAdapter);
-        ArrayList<Player> orderPlayer = mPlayerDataManager.getOrderPlayers();
-        presentCount = orderPlayer.size()-1;
-        present_text_count1.setText(String.valueOf(presentCount));
-        present_text_count2.setText(String.valueOf(presentCount));
-        person_text_total.setText("/" + String.valueOf(players.size()));
+        setPresentText();
 
         plus_person.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,7 +140,7 @@ public class PersonFragment extends Fragment {
             Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.rotate);
             Animation animationDown1 = AnimationUtils.loadAnimation(mContext, R.anim.translate_down1);
             Animation animationDown2 = AnimationUtils.loadAnimation(mContext, R.anim.translate_down2);
-            presentCount++;
+            present_text_count1.setText(String.valueOf(presentCount-1));
             present_text_count2.setText(String.valueOf(presentCount));
             present_text_count2.setVisibility(View.VISIBLE);
             present_plus_image.startAnimation(animation);
@@ -175,7 +171,7 @@ public class PersonFragment extends Fragment {
             Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.rotate_r);
             Animation animationUp1 = AnimationUtils.loadAnimation(mContext, R.anim.translate_up1);
             Animation animationUp2 = AnimationUtils.loadAnimation(mContext, R.anim.translate_up2);
-            presentCount--;
+            present_text_count1.setText(String.valueOf(presentCount+1));
             present_text_count2.setText(String.valueOf(presentCount));
             present_text_count2.setVisibility(View.VISIBLE);
             present_plus_image.startAnimation(animation);
@@ -203,7 +199,7 @@ public class PersonFragment extends Fragment {
 
     private Player newPlayer() {
         Resources res = getResources();
-        Player mPlayer = new Player(res.getString(R.string.def_name), res.getString(R.string.def_nick), null, "999", "R/R", Player.Fielder.all_fielder, Position.BenchPlayer);
+        Player mPlayer = new Player(res.getString(R.string.def_name), res.getString(R.string.def_nick), null, PlayerDataManager.New_number, PlayerDataManager.New_habits, Player.Fielder.all_fielder, Position.BenchPlayer);
         mPlayerDataManager.add_AllPlayers(mPlayer);
         return mPlayer;
     }
@@ -231,14 +227,18 @@ public class PersonFragment extends Fragment {
             players = mPlayerDataManager.getAllPlayers();
             mAdapter.setPlayerArrayList(players);
             mAdapter.notifyDataSetChanged();
-
-            ArrayList<Player> orderPlayer = mPlayerDataManager.getOrderPlayers();
-            presentCount = orderPlayer.size()-1;
-            present_text_count1.setText(String.valueOf(presentCount));
-            present_text_count2.setText(String.valueOf(presentCount));
-            person_text_total.setText("/" + String.valueOf(players.size()));
+            setPresentText();
         }
     };
+
+    private void setPresentText() {
+        players = mPlayerDataManager.getAllPlayers();
+        ArrayList<Player> orderPlayer = mPlayerDataManager.getOrderPlayers();
+        presentCount = orderPlayer.size()-1;
+        present_text_count1.setText(String.valueOf(presentCount));
+        present_text_count2.setText(String.valueOf(presentCount));
+        person_text_total.setText("/" + String.valueOf(players.size()));
+    }
 
     private PlayerDataManager.onPlayerChangeListener orderPlayersOnChangeListener = new PlayerDataManager.onPlayerChangeListener() {
         @Override
