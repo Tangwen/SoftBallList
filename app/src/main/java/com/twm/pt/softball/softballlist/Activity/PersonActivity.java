@@ -1,18 +1,22 @@
 package com.twm.pt.softball.softballlist.Activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,8 +25,8 @@ import android.widget.TextView;
 import com.eftimoff.androidplayer.Player;
 import com.eftimoff.androidplayer.actions.property.PropertyAction;
 import com.squareup.picasso.Picasso;
+import com.twm.pt.softball.softballlist.Fragment.ButtonListDialogFragment;
 import com.twm.pt.softball.softballlist.Fragment.DeleteDialogFragment;
-import com.twm.pt.softball.softballlist.Fragment.PictureDialogFragment;
 import com.twm.pt.softball.softballlist.Manager.PictureManager;
 import com.twm.pt.softball.softballlist.Manager.PlayerDataManager;
 import com.twm.pt.softball.softballlist.R;
@@ -36,8 +40,6 @@ public class PersonActivity extends ActionBarActivity {
 
     private ActionBar supportActionBar;
     private Toolbar person_activity_toolbar;
-    private DrawerLayout person_activity_MainDrawerLayout;
-    private LinearLayout person_activity_picLinearLayout;
     private CardView person_activity_CardView;
     private ImageView person_activity_picImageView;
     private ImageView person_activity_plusIcon;
@@ -52,18 +54,28 @@ public class PersonActivity extends ActionBarActivity {
     private EditText person_activity_numberEditText;
     private LinearLayout person_activity_habitsLinearLayout;
     private TextView person_activity_habitsTextView;
-    private EditText person_activity_habitsEditText;
+    private Button person_activity_habitsButton;
     private LinearLayout person_activity_fielderLinearLayout;
     private TextView person_activity_fielderTextView;
-    private EditText person_activity_fielderEditText;
+    private Button person_activity_fielderButton;
 
+    private Activity mActivity;
+    private PictureManager mPictureManager;
+    private PlayerDataManager mPlayerDataManager;
     private boolean mEditMode = false;
     private com.twm.pt.softball.softballlist.component.Player mPlayer;
-    private final String picPath = "file://" + StorageDirectory.getStorageDirectory(this, StorageDirectory.StorageType.ST_SDCard_RootDir) + PlayerDataManager.picPath;
+    private final String picPath = StorageDirectory.getStorageDirectory(this, StorageDirectory.StorageType.ST_SDCard_RootDir) + PlayerDataManager.picPath;
+    private final String picPathUri = "file://" + picPath;
+
+    private final String habits[] = {"R/R", "R/L", "L/R", "L/L"};
+    private final String plusIcons[] = {"Take Photo", "Gallery Photo", "Cancel"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mActivity = this;
+        mPictureManager = PictureManager.getInstance(mActivity);
+        mPlayerDataManager = PlayerDataManager.getInstance(getApplicationContext());
         mPlayer = getPlayer(savedInstanceState);
         setContentView(R.layout.person_activity);
         initView();
@@ -74,6 +86,7 @@ public class PersonActivity extends ActionBarActivity {
         super.onStart();
         setToolbar();
         setPlayerData(mPlayer);
+        addTextChangedListener();
     }
 
     @Override
@@ -82,6 +95,13 @@ public class PersonActivity extends ActionBarActivity {
         getMenuInflater().inflate(R.menu.person_activity_menu, menu);
         return true;
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        setPlayerPicture(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
 
 
     private com.twm.pt.softball.softballlist.component.Player  getPlayer(Bundle savedInstanceState) {
@@ -92,8 +112,6 @@ public class PersonActivity extends ActionBarActivity {
 
     private void initView() {
         person_activity_toolbar = getView(R.id.person_activity_toolbar);
-        person_activity_MainDrawerLayout = getView(R.id.person_activity_MainDrawerLayout);
-        person_activity_picLinearLayout = getView(R.id.person_activity_picLinearLayout);
         person_activity_CardView = getView(R.id.person_activity_CardView);
         person_activity_picImageView = getView(R.id.person_activity_picImageView);
         person_activity_plusIcon = getView(R.id.person_activity_plusIcon);
@@ -108,21 +126,99 @@ public class PersonActivity extends ActionBarActivity {
         person_activity_numberEditText = getView(R.id.person_activity_numberEditText);
         person_activity_habitsLinearLayout = getView(R.id.person_activity_habitsLinearLayout);
         person_activity_habitsTextView = getView(R.id.person_activity_habitsTextView);
-        person_activity_habitsEditText = getView(R.id.person_activity_habitsEditText);
+        person_activity_habitsButton = getView(R.id.person_activity_habitsButton);
         person_activity_fielderLinearLayout = getView(R.id.person_activity_fielderLinearLayout);
         person_activity_fielderTextView = getView(R.id.person_activity_fielderTextView);
-        person_activity_fielderEditText = getView(R.id.person_activity_fielderEditText);
+        person_activity_fielderButton = getView(R.id.person_activity_fielderButton);
+
+
+        person_activity_nameTextView.setOnClickListener(textOnClickListener);
+        person_activity_nickTextView.setOnClickListener(textOnClickListener);
+        person_activity_numberTextView.setOnClickListener(textOnClickListener);
+        person_activity_habitsTextView.setOnClickListener(textOnClickListener);
+        person_activity_fielderTextView.setOnClickListener(textOnClickListener);
+
+
+        person_activity_habitsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openButtonListDialogFragment("habits", habits);
+            }
+        });
+        person_activity_fielderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int len = com.twm.pt.softball.softballlist.component.Player.Fielder.values().length;
+                String[] fielder = new String[len];
+                int i=0;
+                for(com.twm.pt.softball.softballlist.component.Player.Fielder mFielder: com.twm.pt.softball.softballlist.component.Player.Fielder.values()) {
+                    fielder[i++] = mFielder.getFielderName();
+                }
+                openButtonListDialogFragment("fielder", fielder);
+            }
+        });
+        person_activity_plusIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                plusIcons[0] = getResources().getString(R.string.picture_dialog_TakePhotoText);
+                plusIcons[1] = getResources().getString(R.string.picture_dialog_GalleryPhotoText);
+                plusIcons[2] = getResources().getString(R.string.picture_dialog_CancelText);
+                openButtonListDialogFragment("plusIcon", plusIcons);
+            }
+        });
 
         changeEditMode(mEditMode);
 
         animateSampleOne(person_activity_toolbar, person_activity_CardView, person_activity_nameLinearLayout, person_activity_nickLinearLayout, person_activity_numberLinearLayout, person_activity_habitsLinearLayout, person_activity_fielderLinearLayout);
+    }
 
-        person_activity_plusIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openPlusIconDialog();
+    View.OnClickListener textOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            mEditMode=!mEditMode;
+            changeEditMode(mEditMode);
+        }
+    };
+
+    private void addTextChangedListener() {
+        person_activity_nameEditText.addTextChangedListener(new TextWatcherData(0));
+        person_activity_nickEditText.addTextChangedListener(new TextWatcherData(1));
+        person_activity_numberEditText.addTextChangedListener(new TextWatcherData(2));
+    }
+
+    class TextWatcherData implements TextWatcher {
+        int id;
+        String oldNumber;
+        public TextWatcherData(int id) {
+            this.id = id;
+        }
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+        @Override
+        public void afterTextChanged(Editable editable) {
+            switch(id) {
+                case 0:
+                    mPlayer.Name = person_activity_nameEditText.getText().toString();
+                    person_activity_nameTextView.setText(mPlayer.Name);
+                    break;
+                case 1:
+                    mPlayer.nickName = person_activity_nickEditText.getText().toString();
+                    person_activity_nickTextView.setText(mPlayer.nickName);
+                    break;
+                case 2:
+                    String oldNumber = mPlayer.number;
+                    mPlayerDataManager.remove_AllPlayers(mPlayer);
+                    mPlayer.number = person_activity_numberEditText.getText().toString();
+                    mPlayerDataManager.add_AllPlayers(mPlayer);
+                    person_activity_numberTextView.setText(mPlayer.number);
+                    break;
             }
-        });
+            if(id!=2){
+                mPlayerDataManager.modify_AllPlayers(mPlayer);
+            }
+        }
     }
 
 
@@ -131,14 +227,14 @@ public class PersonActivity extends ActionBarActivity {
             person_activity_nameTextView.setVisibility(View.GONE);
             person_activity_nickTextView.setVisibility(View.GONE);
             person_activity_numberTextView.setVisibility(View.GONE);
-            person_activity_habitsTextView.setVisibility(View.VISIBLE);
-            person_activity_fielderTextView.setVisibility(View.VISIBLE);
+            person_activity_habitsTextView.setVisibility(View.GONE);
+            person_activity_fielderTextView.setVisibility(View.GONE);
 
             person_activity_nameEditText.setVisibility(View.VISIBLE);
             person_activity_nickEditText.setVisibility(View.VISIBLE);
             person_activity_numberEditText.setVisibility(View.VISIBLE);
-            person_activity_habitsEditText.setVisibility(View.INVISIBLE);
-            person_activity_fielderEditText.setVisibility(View.INVISIBLE);
+            person_activity_habitsButton.setVisibility(View.VISIBLE);
+            person_activity_fielderButton.setVisibility(View.VISIBLE);
         } else {
             person_activity_nameTextView.setVisibility(View.VISIBLE);
             person_activity_nickTextView.setVisibility(View.VISIBLE);
@@ -149,8 +245,8 @@ public class PersonActivity extends ActionBarActivity {
             person_activity_nameEditText.setVisibility(View.GONE);
             person_activity_nickEditText.setVisibility(View.GONE);
             person_activity_numberEditText.setVisibility(View.GONE);
-            person_activity_habitsEditText.setVisibility(View.GONE);
-            person_activity_fielderEditText.setVisibility(View.GONE);
+            person_activity_habitsButton.setVisibility(View.GONE);
+            person_activity_fielderButton.setVisibility(View.GONE);
         }
     }
 
@@ -166,7 +262,7 @@ public class PersonActivity extends ActionBarActivity {
 
     private void setPlayerData(com.twm.pt.softball.softballlist.component.Player player) {
         if(player==null) return;
-        Picasso.with(this).load(picPath + mPlayer.picture).placeholder(R.drawable.progress_animation).error(R.mipmap.baseball_icon).into(person_activity_picImageView);
+        Picasso.with(this).load(picPathUri + mPlayer.picture).placeholder(R.drawable.progress_animation).error(R.mipmap.baseball_icon).into(person_activity_picImageView);
         person_activity_nameTextView.setText(player.Name);
         person_activity_nickTextView.setText(player.nickName);
         person_activity_numberTextView.setText(player.number);
@@ -176,6 +272,10 @@ public class PersonActivity extends ActionBarActivity {
         person_activity_nameEditText.setText(player.Name);
         person_activity_nickEditText.setText(player.nickName);
         person_activity_numberEditText.setText(player.number);
+        person_activity_habitsButton.setText(player.habits);
+        person_activity_fielderButton.setText(player.fielder.getFielderName());
+
+
     }
 
     @Override
@@ -227,31 +327,66 @@ public class PersonActivity extends ActionBarActivity {
         deleteDialogFragment.setOnDialogResultListener(new DeleteDialogFragment.OnDialogResultListener() {
             @Override
             public void onClickPositiveButton() {
-                PlayerDataManager.getInstance(getApplicationContext()).remove_AllPlayers(mPlayer);
+                mPlayerDataManager.remove_AllPlayers(mPlayer);
                 finish();
             }
-
             @Override
             public void onClickNegativeButton() {
-                //
             }
         });
         deleteDialogFragment.show(getSupportFragmentManager(), "DeleteDialogFragment");
     }
 
-    private void openPlusIconDialog() {
-        PictureDialogFragment mPictureDialogFragment = new PictureDialogFragment();
-        mPictureDialogFragment.setOnDialogResultListener(onDialogResultListener);
-        FragmentManager mFragmentManager = getSupportFragmentManager();
-        mPictureDialogFragment.show(mFragmentManager, "PictureDialogFragment");
+
+    private void openButtonListDialogFragment(String tag, String textData[]) {
+        Bundle mBundle =  new Bundle();
+        mBundle.putStringArray("textData", textData);
+        ButtonListDialogFragment buttonListDialogFragment = new ButtonListDialogFragment();
+        buttonListDialogFragment.setArguments(mBundle);
+        buttonListDialogFragment.setOnDialogResultListener(new ButtonListDialogFragment.OnDialogResultListener() {
+            @Override
+            public void onResult(String tag, int index) {
+                try {
+                    if(tag.equals("habits")) {
+                        mPlayer.habits = habits[index];
+                        person_activity_habitsTextView.setText(mPlayer.habits);
+                        person_activity_habitsButton.setText(mPlayer.habits);
+                        mPlayerDataManager.modify_AllPlayers(mPlayer);
+                    } else if(tag.equals("fielder")) {
+                        com.twm.pt.softball.softballlist.component.Player.Fielder fielders[] = com.twm.pt.softball.softballlist.component.Player.Fielder.values();
+                        mPlayer.fielder = fielders[index];
+                        person_activity_fielderTextView.setText(mPlayer.fielder.getFielderName());
+                        person_activity_fielderButton.setText(mPlayer.fielder.getFielderName());
+                        mPlayerDataManager.modify_AllPlayers(mPlayer);
+                    } else if (tag.equals("plusIcon")) {
+                        switch(index) {
+                            case 0:
+                                mPictureManager.setPhotoFilePath(picPath).setPhotoFileName("image_" + mPlayer.number + ".jpg").takePhoto();
+                                break;
+                            case 1:
+                                mPictureManager.setPhotoFilePath(picPath).setPhotoFileName("image_" + mPlayer.number + ".jpg").galleryPhoto();
+                                break;
+                            case 2:
+                                break;
+                        }
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        buttonListDialogFragment.show(getSupportFragmentManager(), tag);
     }
 
-    PictureDialogFragment.OnDialogResultListener onDialogResultListener = new PictureDialogFragment.OnDialogResultListener() {
-        @Override
-        public void onResult(int choose) {
-            L.d("choose=" + choose);
+    private void setPlayerPicture(int requestCode, int resultCode, Intent data) {
+        Bitmap photo = mPictureManager.onActivityResult(requestCode, resultCode, data);
+        if(photo!=null) {
+            mPlayer.picture = mPictureManager.getPhotoFileName();
+            Picasso.with(this).load(picPathUri + mPlayer.picture).placeholder(R.drawable.progress_animation).error(R.mipmap.baseball_icon).into(person_activity_picImageView);
+            PlayerDataManager.getInstance(getApplicationContext()).modify_AllPlayers(mPlayer);
         }
-    };
+    }
 
     //https://github.com/geftimov/android-player
     private void animateSampleOne(View toolbar, View picView, View nameLinearLayout, View nickLinearLayout, View numberLinearLayout, View habitsLinearLayout, View fielderLinearLayout) {
@@ -281,4 +416,5 @@ public class PersonActivity extends ActionBarActivity {
         return (E) findViewById(id);
     }
 }
+
 

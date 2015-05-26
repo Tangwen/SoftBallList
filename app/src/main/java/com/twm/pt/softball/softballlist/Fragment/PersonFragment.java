@@ -228,8 +228,15 @@ public class PersonFragment extends Fragment {
     private PlayerDataManager.onPlayerChangeListener allPlayersOnChangeListener = new PlayerDataManager.onPlayerChangeListener() {
         @Override
         public void onChange(ArrayList<Player> players) {
-            mAdapter.setPlayerArrayList(mPlayerDataManager.getAllPlayers());
+            players = mPlayerDataManager.getAllPlayers();
+            mAdapter.setPlayerArrayList(players);
             mAdapter.notifyDataSetChanged();
+
+            ArrayList<Player> orderPlayer = mPlayerDataManager.getOrderPlayers();
+            presentCount = orderPlayer.size()-1;
+            present_text_count1.setText(String.valueOf(presentCount));
+            present_text_count2.setText(String.valueOf(presentCount));
+            person_text_total.setText("/" + String.valueOf(players.size()));
         }
     };
 

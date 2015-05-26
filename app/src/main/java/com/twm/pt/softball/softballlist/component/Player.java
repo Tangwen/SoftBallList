@@ -102,5 +102,18 @@ public class Player implements Serializable {
         public String getFielderName() {
             return fielderName;
         }
+
+        public static Fielder lookup(final String valueString) {
+            Fielder obj = null;
+            if (valueString != null) {
+                for (Fielder obj1 : Fielder.values()) {
+                    if (obj1.getFielderName().equalsIgnoreCase(valueString)) {
+                        obj = obj1;
+                        break;
+                    }
+                }
+            }
+            return obj;
+        }
     }
 }

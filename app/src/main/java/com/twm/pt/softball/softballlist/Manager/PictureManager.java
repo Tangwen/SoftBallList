@@ -223,6 +223,16 @@ public class PictureManager {
         return this;
     }
 
+    /**
+     *
+     * @param photoFilePath
+     * @return
+     */
+    public PictureManager setPhotoFilePath(String photoFilePath) {
+        this.photoFilePath = new File(photoFilePath);
+        return this;
+    }
+
     //Photo File Name
     public String getPhotoFileName() {
         return photoFileName;

@@ -8,6 +8,7 @@
     <color name="light_green">#4400FF00</color>
     <color name="green">#00FF00</color>
     <color name="blue">#0000FF</color>
+    <color name="light_blue">#880000FF</color>
     <color name="black">#000000</color>
 
 </resources>

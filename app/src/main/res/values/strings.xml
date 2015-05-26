@@ -13,6 +13,7 @@
     <string name="paid_text">此功能免費版本未提供，\n請購買付費版本，謝謝您！</string>
     <string name="person_bar_title">球員基本資料</string>
     <string name="alert_dialog_delete">確定刪除該筆資料?</string>
+    <string name="please_choice">請選擇</string>
 
     <string name="action_edit">編輯</string>
     <string name="action_share">分享</string>

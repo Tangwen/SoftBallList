@@ -116,11 +116,17 @@ public class PlayerDataManager {
         SavePlayer();
         notifyAllPlayersOnChangeListener();
     }
+    public void modify_AllPlayers(Player mPlayer) {
+        int index = players.indexOf(mPlayer);
+        L.d("index=" + index);
+        if(index>=0) {
+            players.set(index, mPlayer);
+            SavePlayer();
+            notifyAllPlayersOnChangeListener();
+        }
+    }
     public void remove_AllPlayers(Player mPlayer) {
-        L.d(""+players.size() + "number=" + mPlayer.number);
-        L.d("index=" + players.indexOf(mPlayer));
         players.remove(mPlayer);
-        L.d("" + players.size());
         SavePlayer();
         notifyAllPlayersOnChangeListener();
     }
