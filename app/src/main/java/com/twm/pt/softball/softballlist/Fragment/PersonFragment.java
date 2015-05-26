@@ -213,10 +213,12 @@ public class PersonFragment extends Fragment {
     View.OnClickListener onPresentClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if(((CheckBox)view).isChecked()) {
-                plusPresentCount();
-            } else {
-                minusPresentCount();
+            if(view instanceof  CheckBox) {
+                if(((CheckBox)view).isChecked()) {
+                    plusPresentCount();
+                } else {
+                    minusPresentCount();
+                }
             }
         }
     };

@@ -2,6 +2,7 @@ package com.twm.pt.softball.softballlist.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +38,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
     public class ViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener  {
         // each data item is just a string in this case
         public ImageView mImageView;
+        public CardView card_view2;
         public TextView person_name;
         public TextView person_nickName;
         public TextView person_number;
@@ -47,54 +49,70 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
 
         public ViewHolder(View itemLayoutView) {
             super(itemLayoutView);
-            itemLayoutView.setOnClickListener(this);
-            mImageView =getView(itemLayoutView, R.id.person_picture);
+//            itemLayoutView.setOnClickListener(this);
+            mImageView = getView(itemLayoutView, R.id.person_picture);
+            card_view2 = getView(itemLayoutView, R.id.card_view2);
             person_name = getView(itemLayoutView, R.id.person_name);
             person_nickName = getView(itemLayoutView, R.id.person_nickName);
             person_number = getView(itemLayoutView, R.id.person_number);
             person_habits = getView(itemLayoutView, R.id.person_habits);
             person_fielder = getView(itemLayoutView, R.id.person_fielder);
             person_present = getView(itemLayoutView, R.id.person_present);
+            mImageView.setTag(person_present);
             mImageView.setOnClickListener(onImageViewClickListener);
+            card_view2.setOnClickListener(onCardViewClickListener);
             person_present.setOnClickListener(onPresentClickListener);
         }
 
         @Override
         public void onClick(View view) {
-            if(setFullSpanPosition == getLayoutPosition()) {
-                setFullSpanPosition = -1;
-            } else {
-                setFullSpanPosition = getLayoutPosition();
-            }
-//            notifyDataSetChanged();
-            for (View.OnClickListener listener: mListener) {
-                view.setTag(getLayoutPosition());
-                listener.onClick(view);
-            }
+//            if(setFullSpanPosition == getLayoutPosition()) {
+//                setFullSpanPosition = -1;
+//            } else {
+//                setFullSpanPosition = getLayoutPosition();
+//            }
+//            for (View.OnClickListener listener: mListener) {
+//                view.setTag(getLayoutPosition());
+//                listener.onClick(view);
+//            }
         }
+
 
         View.OnClickListener onImageViewClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openPersonActivity();
+                ((CheckBox)view.getTag()).setChecked(!playerArrayList.get(getLayoutPosition()).present);
+                changePresent(getLayoutPosition(), (View) view.getTag());
+            }
+        };
+
+        View.OnClickListener onCardViewClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openPersonActivity(getLayoutPosition());
             }
         };
 
         View.OnClickListener onPresentClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                playerArrayList.get(getLayoutPosition()).present = ((CheckBox)view).isChecked();
-                PlayerDataManager.getInstance(mContext).setAllPlayers(playerArrayList);
-                for (View.OnClickListener listener: mPresentListener) {
-                    listener.onClick(view);
-                }
+                changePresent(getLayoutPosition(), view);
             }
         };
 
-        private void openPersonActivity() {
+        private void changePresent(int index, View view) {
+//            playerArrayList.get(index).present = ((CheckBox)view).isChecked();
+            playerArrayList.get(index).present = !playerArrayList.get(index).present;
+            PlayerDataManager.getInstance(mContext).setAllPlayers(playerArrayList);
+            for (View.OnClickListener listener: mPresentListener) {
+                listener.onClick(view);
+            }
+        }
+
+        private void openPersonActivity(int index) {
             Intent intent = new Intent(mContext, PersonActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra("Player", playerArrayList.get(getLayoutPosition()));
+            intent.putExtra("Player", playerArrayList.get(index));
             mContext.startActivity(intent);
         }
     }
