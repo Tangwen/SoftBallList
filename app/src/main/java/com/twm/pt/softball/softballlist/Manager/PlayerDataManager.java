@@ -179,8 +179,12 @@ public class PlayerDataManager {
         Collections.sort(sortPlayer, new Comparator<Player>() {
             @Override
             public int compare(Player o1, Player o2) {
-                //return o1.number.compareTo(o2.number);
-                return Integer.parseInt(o1.number) - Integer.parseInt(o2.number);
+                try {
+                    return Integer.parseInt(o1.number) - Integer.parseInt(o2.number);
+                } catch (Exception e) {
+
+                }
+                return o1.number.compareTo(o2.number);
             }
         });
         return sortPlayer;
