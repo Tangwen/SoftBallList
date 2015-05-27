@@ -2,10 +2,8 @@ package com.twm.pt.softball.softballlist.Activity;
 
 import android.app.Service;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Vibrator;
 import android.support.v4.view.ViewPager;
@@ -23,20 +21,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.twm.pt.softball.softballlist.Adapter.MyFragmentPagerAdapter;
+import com.twm.pt.softball.softballlist.Fragment.ButtonListDialogFragment;
 import com.twm.pt.softball.softballlist.Fragment.OrderFragment;
 import com.twm.pt.softball.softballlist.Fragment.PersonFragment;
 import com.twm.pt.softball.softballlist.Fragment.PositionsFragment2;
 import com.twm.pt.softball.softballlist.Fragment.TeamNameDialogFragment;
+import com.twm.pt.softball.softballlist.Manager.BackupManager;
 import com.twm.pt.softball.softballlist.Manager.PictureManager;
 import com.twm.pt.softball.softballlist.Manager.PlayerDataManager;
 import com.twm.pt.softball.softballlist.R;
+import com.twm.pt.softball.softballlist.component.Player;
 import com.twm.pt.softball.softballlist.utility.L;
 import com.twm.pt.softball.softballlist.utility.PreferenceUtils;
 import com.twm.pt.softball.softballlist.utility.StorageDirectory;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 
@@ -62,11 +63,15 @@ public class MainActivity extends ActionBarActivity {
 
     //Key
     private static String team_name_key = "team_name";
+    public static String fullPicPath = "/";
+    public static final String backupSub = ".bk";
+    private String backupFileList[] = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAppContext = getApplicationContext();
+        fullPicPath = StorageDirectory.getStorageDirectory(this, StorageDirectory.StorageType.ST_SDCard_RootDir) + PlayerDataManager.picPath;
 
         setContentView(R.layout.activity_main);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -150,6 +155,15 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(View view) {
                 showTeamNameDialogFragment();
+            }
+        });
+
+        etTeam_name.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                doVibrator(100);
+                openButtonListDialogFragment("etTeam_name", getResources().getStringArray(R.array.backup_local));
+                return false;
             }
         });
     }
@@ -291,7 +305,7 @@ public class MainActivity extends ActionBarActivity {
      */
     private void shotScreenAndsaveAndShare(View view) {
         try {
-            String path = StorageDirectory.getStorageDirectory(mAppContext, StorageDirectory.StorageType.ST_SDCard_RootDir) + PlayerDataManager.picPath;
+            String path = MainActivity.fullPicPath;
             File shotScreenFile = new File(path + "tmp.jpg");
 
             doVibrator(100);
@@ -302,6 +316,58 @@ public class MainActivity extends ActionBarActivity {
         } catch (Exception e) {
             L.e(e.getMessage());
         }
+    }
+
+
+    private void openButtonListDialogFragment(String tag, String textData[]) {
+        Bundle mBundle =  new Bundle();
+        mBundle.putStringArray("textData", textData);
+        ButtonListDialogFragment buttonListDialogFragment = new ButtonListDialogFragment();
+        buttonListDialogFragment.setArguments(mBundle);
+        buttonListDialogFragment.setOnDialogResultListener(new ButtonListDialogFragment.OnDialogResultListener() {
+            @Override
+            public void onResult(String tag, int index) {
+                try {
+                    if(tag.equals("etTeam_name")) {
+                        switch(index) {
+                            case 0:
+                                //Backup
+                                File outFile = new File(fullPicPath+etTeam_name.getText()+ getNowTimeString());
+                                //L.d("outFile=" + outFile.getAbsolutePath());
+                                String playersJson = PreferenceUtils.ObjectToJson(PlayerDataManager.getInstance(mAppContext).getAllPlayers());
+                                //L.d("playersJson=" + playersJson);
+                                BackupManager.getinstance().localBackup(outFile, playersJson);
+                                break;
+                            case 1:
+                                //Restore
+                                File filePath = new File(fullPicPath);
+                                backupFileList = BackupManager.getinstance().getLocalRestoreFileList(filePath, backupSub);
+                                openButtonListDialogFragment("filePathList", backupFileList);
+                                break;
+                            case 2:
+                                //Cancel
+                                break;
+                        }
+                    } else if(tag.equals("filePathList")) {
+                        if(index>=0 && backupFileList !=null && index<backupFileList.length) {
+                            String jsonString = BackupManager.getinstance().localRestore(fullPicPath + backupFileList[index]);
+                            //L.d("jsonString=" + jsonString);
+                            ArrayList<Player> players = PreferenceUtils.JsonToObject(jsonString, PlayerDataManager.arrayListPlayerType);
+                            PlayerDataManager.getInstance(mAppContext).setAllPlayers(players);
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        buttonListDialogFragment.show(getSupportFragmentManager(), tag);
+    }
+
+    private String getNowTimeString() {
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("_yyMMddHHmmss");
+        return dateFormat.format(date) + backupSub;
     }
 
 

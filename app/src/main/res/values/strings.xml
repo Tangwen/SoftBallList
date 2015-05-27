@@ -25,9 +25,12 @@
     <string name="person_activity_habitsText">投打：</string>
     <string name="person_activity_fielderText">位置：</string>
 
-    <string name="picture_dialog_TakePhotoText"> 　　從 相 機　　</string>
-    <string name="picture_dialog_GalleryPhotoText">　　從 相 簿　　</string>
-    <string name="picture_dialog_CancelText">　　取  消　　</string>
+    <string name="picture_dialog_TakePhotoText">從相機</string>
+    <string name="picture_dialog_GalleryPhotoText">從相簿</string>
+    <string name="picture_dialog_CancelText">取　消</string>
+
+    <string name="loacl_backup">備份</string>
+    <string name="loacl_restore">還原</string>
 
     <string name="def_name">強打者</string>
     <string name="def_nick">強者</string>

@@ -65,11 +65,11 @@ public class PersonActivity extends ActionBarActivity {
     private boolean mEditMode = false;
     private boolean isChangePlayerNumber = false;
     private com.twm.pt.softball.softballlist.component.Player mPlayer;
-    private final String picPath = StorageDirectory.getStorageDirectory(this, StorageDirectory.StorageType.ST_SDCard_RootDir) + PlayerDataManager.picPath;
+    private final String picPath = MainActivity.fullPicPath;
     private final String picPathUri = "file://" + picPath;
 
     private final String habits[] = {"R/R", "R/L", "L/R", "L/L"};
-    private final String plusIcons[] = {"Take Photo", "Gallery Photo", "Cancel"};
+    private String plusIcons[] = {"Take Photo", "Gallery Photo", "Cancel"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,9 +169,7 @@ public class PersonActivity extends ActionBarActivity {
         person_activity_plusIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                plusIcons[0] = getResources().getString(R.string.picture_dialog_TakePhotoText);
-                plusIcons[1] = getResources().getString(R.string.picture_dialog_GalleryPhotoText);
-                plusIcons[2] = getResources().getString(R.string.picture_dialog_CancelText);
+                plusIcons = getResources().getStringArray(R.array.picture_dialog);
                 openButtonListDialogFragment("plusIcon", plusIcons);
             }
         });
@@ -335,7 +333,7 @@ public class PersonActivity extends ActionBarActivity {
      */
     private void shotScreenAndsaveAndShare(View view) {
         try {
-            String path = StorageDirectory.getStorageDirectory(this, StorageDirectory.StorageType.ST_SDCard_RootDir) + PlayerDataManager.picPath;
+            String path = MainActivity.fullPicPath;
             File shotScreenFile = new File(path + "tmp.jpg");
 
             Bitmap shotScreen = PictureManager.screenShot(view);
@@ -392,6 +390,7 @@ public class PersonActivity extends ActionBarActivity {
                                 mPictureManager.setPhotoFilePath(picPath).setPhotoFileName("image_" + mPlayer.number + ".jpg").galleryPhoto();
                                 break;
                             case 2:
+                                //Cancel
                                 break;
                         }
 
@@ -408,6 +407,7 @@ public class PersonActivity extends ActionBarActivity {
         Bitmap photo = mPictureManager.onActivityResult(requestCode, resultCode, data);
         if(photo!=null) {
             mPlayer.picture = mPictureManager.getPhotoFileName();
+            Picasso.with(this).invalidate(picPathUri + mPlayer.picture);
             Picasso.with(this).load(picPathUri + mPlayer.picture).placeholder(R.drawable.progress_animation).error(R.mipmap.baseball_icon).into(person_activity_picImageView);
             PlayerDataManager.getInstance(getApplicationContext()).modify_AllPlayers(mPlayer);
         }

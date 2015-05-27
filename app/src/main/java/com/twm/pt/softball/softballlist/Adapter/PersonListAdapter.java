@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.twm.pt.softball.softballlist.Activity.MainActivity;
 import com.twm.pt.softball.softballlist.Activity.PersonActivity;
 import com.twm.pt.softball.softballlist.Manager.PlayerDataManager;
 import com.twm.pt.softball.softballlist.R;
@@ -27,7 +28,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<PersonListAdapter.Vi
 
     private ArrayList<Player> playerArrayList;
     private Context mContext;
-    private final String picPath = "file://" + StorageDirectory.getStorageDirectory(mContext, StorageDirectory.StorageType.ST_SDCard_RootDir) + PlayerDataManager.picPath;;
+    private final String picPath = "file://" + MainActivity.fullPicPath;
     private ArrayList<View.OnClickListener> mListener = new ArrayList<View.OnClickListener> ();
     private ArrayList<View.OnClickListener> mPresentListener = new ArrayList<View.OnClickListener> ();
     private int setFullSpanPosition = -1;

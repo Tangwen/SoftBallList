@@ -120,7 +120,7 @@ public class PlayerDataManager {
     }
     public void modify_AllPlayers(Player mPlayer) {
         int index = players.indexOf(mPlayer);
-        L.d("index=" + index);
+        //L.d("index=" + index);
         if(index>=0) {
             players.set(index, mPlayer);
             SavePlayer();

@@ -107,7 +107,7 @@ public class PictureManager {
         Log.d(TAG, "resultCode=" + resultCode);
         switch (requestCode) {
             case PHOTO_REQUEST_TAKEPHOTO:
-                if(resultCode==Activity.RESULT_OK) {
+                if(resultCode==Activity.RESULT_OK && photoFile!= null) {
                     photoBitmap = fileToBitmap(photoFile.getAbsolutePath());
                     if(needCut) {
                         cutPhoto(Uri.fromFile(photoFile));
@@ -115,16 +115,18 @@ public class PictureManager {
                 }
                 break;
             case PHOTO_REQUEST_GALLERYPHOTO:
-                if (data != null)
+                if (data != null) {
                     photoBitmap = getBitmapFromUri(data.getData());
-                    if(needCut) {
+                    if (needCut) {
                         cutPhoto(data.getData());
                     }
+                }
                 break;
             case PHOTO_REQUEST_CUTPHOTO:
-                if (data != null)
+                if (data != null) {
                     photoBitmap = getPhotoData(data);
                     saveBitmapToFile(photoBitmap, photoFile);
+                }
                 break;
         }
         return photoBitmap;

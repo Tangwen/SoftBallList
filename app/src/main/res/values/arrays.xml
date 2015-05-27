@@ -9,4 +9,16 @@
         <item>@mipmap/emotion_29</item>
         <item>@mipmap/emotion_35</item>
     </array>
+
+    <string-array name="picture_dialog">
+        <item>@string/picture_dialog_TakePhotoText</item>
+        <item>@string/picture_dialog_GalleryPhotoText</item>
+        <item>@string/picture_dialog_CancelText</item>
+    </string-array>
+
+    <string-array name="backup_local">
+        <item>@string/loacl_backup</item>
+        <item>@string/loacl_restore</item>
+        <item>@string/cancel</item>
+    </string-array>
 </resources>
