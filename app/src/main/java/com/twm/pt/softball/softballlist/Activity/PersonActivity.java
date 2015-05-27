@@ -5,13 +5,13 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -63,6 +63,7 @@ public class PersonActivity extends ActionBarActivity {
     private PictureManager mPictureManager;
     private PlayerDataManager mPlayerDataManager;
     private boolean mEditMode = false;
+    private boolean isChangePlayerNumber = false;
     private com.twm.pt.softball.softballlist.component.Player mPlayer;
     private final String picPath = StorageDirectory.getStorageDirectory(this, StorageDirectory.StorageType.ST_SDCard_RootDir) + PlayerDataManager.picPath;
     private final String picPathUri = "file://" + picPath;
@@ -87,6 +88,14 @@ public class PersonActivity extends ActionBarActivity {
         setToolbar();
         setPlayerData(mPlayer);
         addTextChangedListener();
+    }
+
+    @Override
+    protected void onStop() {
+        if(isChangePlayerNumber) {
+            changePlayerNumber();
+        }
+        super.onStop();
     }
 
     @Override
@@ -184,6 +193,7 @@ public class PersonActivity extends ActionBarActivity {
         person_activity_nameEditText.addTextChangedListener(new TextWatcherData(0));
         person_activity_nickEditText.addTextChangedListener(new TextWatcherData(1));
         person_activity_numberEditText.addTextChangedListener(new TextWatcherData(2));
+        person_activity_numberEditText.setOnEditorActionListener(mOnEditorActionListener);
     }
 
     class TextWatcherData implements TextWatcher {
@@ -208,17 +218,32 @@ public class PersonActivity extends ActionBarActivity {
                     person_activity_nickTextView.setText(mPlayer.nickName);
                     break;
                 case 2:
-                    String oldNumber = mPlayer.number;
-                    mPlayerDataManager.remove_AllPlayers(mPlayer);
-                    mPlayer.number = person_activity_numberEditText.getText().toString();
-                    mPlayerDataManager.add_AllPlayers(mPlayer);
-                    person_activity_numberTextView.setText(mPlayer.number);
+                    String numberString = person_activity_numberEditText.getText().toString();
+                    person_activity_numberTextView.setText(numberString);
+                    isChangePlayerNumber = true;
                     break;
             }
             if(id!=2){
                 mPlayerDataManager.modify_AllPlayers(mPlayer);
             }
         }
+    }
+
+    TextView.OnEditorActionListener mOnEditorActionListener = new TextView.OnEditorActionListener() {
+        @Override
+        public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+            //L.d("textView.getText() = "+textView.getText());
+            changePlayerNumber();
+            return false;
+        }
+    };
+
+    private void changePlayerNumber() {
+        mPlayerDataManager.remove_AllPlayers(mPlayer);
+        mPlayer.number = person_activity_numberEditText.getText().toString();
+        mPlayerDataManager.add_AllPlayers(mPlayer);
+        person_activity_numberTextView.setText(mPlayer.number);
+        isChangePlayerNumber = false;
     }
 
 
